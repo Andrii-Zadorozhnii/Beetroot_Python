@@ -3,7 +3,10 @@ from numpy.random import randn
 
 #for i in range(len(a)):
 #    print(f'Index {i}: {a[i].upper()}')
+a2 = "kolobok"
 
+for index,latter in enumerate(a2):
+    print(f"Index: {index}, Fruit: {latter.upper()}")
 
 #Задачі до уроку 4:
 
