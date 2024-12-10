@@ -26,7 +26,7 @@ repeat_dict = {}
 
 # Calculation repeating words and add it to the dictionary
 for word in word_list:
-    repeat_dict[word.lower()] = repeat_dict.get(word, 0) + 1
+    repeat_dict[word.lower()] = repeat_dict.get(word.lower(), 0) + 1
 
 # Showing result to user
 for word_name,word_count in repeat_dict.items():
