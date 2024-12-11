@@ -9,7 +9,7 @@ import random
 
 from webcolors import names
 random_number = random.randint(1,10)
-result = input("Chose a number from 1 till 10?: ")
+result = int(input("Chose a number from 1 till 10?: "))
 
 if random_number == result:
     print(

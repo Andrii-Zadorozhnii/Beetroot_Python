@@ -1,0 +1,2 @@
+def randint():
+    print('Hello')
