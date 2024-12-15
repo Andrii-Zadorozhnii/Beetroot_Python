@@ -1,40 +1,70 @@
 import json
+from importlib.resources import files
 
-users = {}
+from Components.load_users import load_user
+from Components.insert_user.add_user import add_user
+from Components.show_users import show_users
+
+
+
+file_name = 'Components/insert_user/phones.json'
+
+users = load_user(file_name)
 working = True
 
-def user_data(user_number, user_name, user_family_name, user_city, user_country):
-    users[user_number] = {'name': user_name, 'family name': user_family_name, 'user_city': user_city,
-                          'user_country': user_country}
+print(users)
 
 
 
-def save_users():
-    with open('phones.json', 'w') as my_data_base:
-        json.dump(users, my_data_base,indent=4)
+
 
 while working:
-    action = input('What do you want to do: Insert User(1)/Update User(2)/Delete User(3)/Search(4) or Exit?(e): ')
 
+    action = input('What do you want to do: Insert User(1)/Update User(2)/Delete User(3)/Search(4)/Show Users(5) or Exit?(e): ')
+    phone_number = input('Please write a phone number for change data: ')
     if action == '1':
-        number = input("Enter the user's number: ")
-        user_name = input("Enter the user's first name: ")
-        family_name = input("Enter the user's last name: ")
-        user_city = input("Enter the user's city: ")
-        user_country = input("Enter the user's country: ")
+        try:
+            add_user(users,file_name)
+        except Exception:
+            print('Input User Error')
 
-        user_data(number,user_name,family_name,user_city,user_country)
-
-        save_users()
-
-        print("User inserted and data saved.")
 
     elif action == '2':
-        print('Update functionality goes here.')
+        key = input('Please write a data(name/family name/city/country) that you want change data: ')
+        new_data = input(f'Please write a new data for {key}: ')
+        def update_user(file_name, phone_number,key,new_data):
+            global users
+            with open(file_name, 'r+', encoding='utf-8') as file:
+                users = dict(json.load(file_name))
+
+            if phone_number in users:
+
+                users[phone_number][key] = new_data
+                file.seek(0)
+                json.dump(users,file, indent=4)
+
+                update_user(file_name, phone_number, key, new_data)
+
+                print('User data updated successfully')
+            else:
+                answer = input('No current user in list, do you want to add? (y/n)')
+                if answer == 'y':
+                    try:
+                        add_user(users, file_name)
+                    except Exception:
+                        print('Input User Error')
+                else:
+                    print("We will come back you to main menu...")
+
+        update_user(file_name, phone_number,key,new_data)
+
+
     elif action == '3':
-        print('Delete functionality goes here.')
+        print('')
     elif action == '4':
-        print('Search functionality goes here.')
+        print('')
+    elif action == '5':
+        show_users(file_name,users)
     elif action == 'e':
         working = False
         print('Exiting the program.')
