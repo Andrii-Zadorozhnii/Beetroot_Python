@@ -1,5 +1,6 @@
 import json
 
+
 def load_user(file_name):
     try:
         with open(file_name, 'r', encoding='utf-8') as my_data_base:
