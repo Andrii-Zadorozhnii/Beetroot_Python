@@ -1,10 +1,8 @@
 import json
 
+from Lesson_12_Working_with_files.Homework_12_Phonebook_application.Components.working_with_files.open_read_file import \
+    open_read_file
 
-def load_user(file_name):
-    try:
-        with open(file_name, 'r', encoding='utf-8') as my_data_base:
-            return json.load(my_data_base)
-    except FileNotFoundError:
-        print(f"Error: The file '{file_name}' was not found.")
-        return {}
+
+def load_user(filename):
+    return open_read_file(filename)

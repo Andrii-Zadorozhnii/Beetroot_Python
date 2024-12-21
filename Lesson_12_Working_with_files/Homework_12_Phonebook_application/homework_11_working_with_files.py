@@ -1,149 +1,54 @@
 import json
+import sys
+import os
 
-from Lesson_12_Working_with_files.Homework_12_Phonebook_application.Components.insert_user.add_user import add_user
-from Lesson_12_Working_with_files.Homework_12_Phonebook_application.Components.show_users import show_users
-from Lesson_12_Working_with_files.Homework_12_Phonebook_application.Components.update_user.update_users import \
-    update_user
-from Lesson_12_Working_with_files.Homework_12_Phonebook_application.Components.delete_user.delete_user import \
-    delete_user
-from Lesson_12_Working_with_files.Homework_12_Phonebook_application.Components.load_users import load_user
+from Components.insert_user.add_user import add_user
+from Components.search_user.search_users import search_user
+from Components.show_users import show_users
+from Components.update_user.update_users import update_user
+from Components.delete_user.delete_user import delete_user
+from Components.load_users import load_user
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# if len(sys.argv) != 2:
+#     print("Usage: python my_script_file.py my_data_base.json")
+#     sys.exit(1)
 
 file_name = 'Data_base/data_base.json'
+# file_name = sys.argv[1]
 
 users = load_user(file_name)
 working = True
 while working:
+    try:
+        action = input(
+            'What do you want to do: (1)Insert User/(2)Update User/(3)Delete User/(4)Search/(5)Show Users or (e)Exit?: ')
 
-    action = input(
-        'What do you want to do: (1)Insert User/(2)Update User/(3)Delete User/(4)Search/(5)Show Users or (e)Exit?: ')
+        if action == '1':
 
-    if action == '1':
+            add_user(users, file_name)
 
-        add_user(users, file_name)
+        elif action == '2':
 
-    elif action == '2':
+            update_user(users, file_name)
 
-        update_user(users, file_name)
+        elif action == '3':
 
-    elif action == '3':
+            delete_user(users, file_name)
 
-        delete_user(users, file_name)
+        elif action == '4':
 
-    elif action == '4':
+            search_user(users, file_name)
 
-        def search_user(variable, filename):
-            input_key = input(
-                'Please write what do you want to use for search |(1)Phone Number|(2)Name|(3)Family name|(4)Full Name|(5)City|(6)Country: ')
+        elif action == '5':
 
-            search_data = input('Please write what do you search: ')
+            show_users(file_name, users)
 
-            if input_key == '1':
-
-                try:
-                    with open(filename, 'r+', encoding='utf-8') as file:
-                        variable = json.load(file)
-                        for user_number, details in variable.items():
-                            if user_number == search_data:
-                                a = []
-                                a.append(f'{user_number}{details}')
-                                print(' | '.join(a))  # need to make better looking
-                            else:
-                                print('No current phone number in data base')
-                except Exception:
-                    print('some Error')
-
-            elif input_key == '2':
-
-                try:
-                    with open(filename, 'r+', encoding='utf-8') as file:
-                        variable = json.load(file)
-                        for user_number, details in variable.items():
-                            if details['name'].lower() == search_data.lower():
-                                a = []
-                                a.append(f'Phone number: {user_number:15}')
-                                for key, value in details.items():
-                                    a.append(f'{key:8}: {value:15}')
-
-                                print(' | '.join(a))
-                except Exception:
-                    print('Some Error')
-
-            elif input_key == '3':
-
-                try:
-                    with open(filename, 'r+', encoding='utf-8') as file:
-                        variable = json.load(file)
-                        for user_number, details in variable.items():
-                            if details['family name'].lower() == search_data.lower():
-                                a = []
-                                a.append(f'Phone number: {user_number:15}')
-                                for key, value in details.items():
-                                    a.append(f'{key:8}: {value:15}')
-                                print(' | '.join(a))
-                except Exception:
-                    print('Some Error')
-
-            elif input_key == '4':
-                try:
-                    with open(filename, 'r+', encoding='utf-8') as file:
-                        variable = json.load(file)
-                        for user_number, details in variable.items():
-                            if (
-                            f'{details['name'].lower()}+" "+ {details['family name'].lower()}') == search_data.lower():
-                                a = []
-                                a.append(f'Phone number: {user_number:15}')
-                                for key, value in details.items():
-                                    a.append(f'{key:8}: {value:15}')
-
-                                print(' | '.join(a))
-                except Exception:
-                    print('Some Error')
-            elif input_key == '5':
-                try:
-                    with open(filename, 'r+', encoding='utf-8') as file:
-                        variable = json.load(file)
-                        for user_number, details in variable.items():
-                            if details['user city'].lower() == search_data.lower():
-                                a = []
-                                a.append(f'Phone number: {user_number:15}')
-                                for key, value in details.items():
-                                    a.append(f'{key:8}: {value:15}')
-
-                                print(' | '.join(a))
-                except Exception:
-                    print('Some Error')
-            elif input_key == '6':
-
-                try:
-                    with open(filename, 'r+', encoding='utf-8') as file:
-                        variable = json.load(file)
-                        counter = 1
-                        for user_number, details in variable.items():
-                            if details['user country'].lower() == search_data.lower():
-                                a = []
-
-                                a.append(f'{counter}.Phone number: {user_number:15}')
-                                for key, value in details.items():
-                                    a.append(f'{key:8}: {value:15}')
-
-                                print(' | '.join(a))
-                        counter += 1
-                except Exception:
-                    print('Some Error')
-                search_key = 'country'
-            else:
-                print('Wrong input')
-
-
-        search_user(users, file_name)
-        print()
-
-    elif action == '5':
-
-        show_users(file_name, users)
-
-    elif action == 'e':
-        working = False
-        print('Exiting the program.')
-    else:
-        print("Invalid option, please choose again.")
+        elif action == 'e':
+            working = False
+            print('Exiting the program.')
+        else:
+            print("Invalid option, please choose again.")
+    except Exception:
+        print('Some Error, try again...')

@@ -2,8 +2,8 @@ from .load_users import load_user
 
 
 # Showing all users to
-def show_users(file_name, variable):
-    variable = load_user(file_name)
+def show_users(filename, variable):
+    variable = load_user(filename)
     if variable == {}:
         print(
             "No users found."
