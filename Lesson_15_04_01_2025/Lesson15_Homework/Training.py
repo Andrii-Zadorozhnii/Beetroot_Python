@@ -3,6 +3,7 @@
 # Напиши декоратор, который будет выводить сообщение “Функция была вызвана!” перед каждым вызовом функции.
 #
 # Пример:
+from fontTools.misc.cython import returns
 
 
 def my_decorator(func):
@@ -28,10 +29,27 @@ hello()
 #
 # Напиши декоратор, который будет принимать аргумент n и выводить его перед вызовом функции. Например, для функции, которая принимает аргумент x:
 
+def my_decorator(n):
+    def decorator(func):
+        def wrapper(x):
+            print(
+                f'Decorator argument: {n}'
+            )
+            return func(x)
+
+        return wrapper
+
+    return decorator
+
+
 @my_decorator(5)
 def multiply(x):
     return x * 2
 
+
+print(
+    f'Resul: {multiply(10)}'
+)
 
 # Декоратор должен выводить: “Аргумент: 5” перед вызовом функции multiply.
 #
@@ -42,9 +60,28 @@ def multiply(x):
 import time
 
 
+def time_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        calculation_time = time.time() - start_time
+        print(
+            f"Function calculation time is: {calculation_time:.1f} seconds"
+        )
+        return result
+
+    return wrapper
+
+
 @time_decorator
 def long_running_function():
     time.sleep(2)
+    return print(
+        'Function completed'
+    )
+
+
+long_running_function()
 
 
 # После вызова long_running_function() должен выводиться вывод типа:
@@ -59,7 +96,6 @@ def long_running_function():
 def add(a, b):
     return a + b
 
-
 # После вызова add(2, 3) вывод должен быть:
 #
 # Функция add вызвана с аргументами (2, 3)
@@ -68,9 +104,9 @@ def add(a, b):
 #
 # Напиши декоратор, который изменяет все передаваемые в функцию строковые аргументы на заглавные буквы. Например:
 
-@uppercase_decorator
-def greet(name):
-    print(f"Привет, {name}!")
+# @uppercase_decorator
+# def greet(name):
+#     print(f"Привет, {name}!")
 
 
 # При вызове greet("Андрий") результат должен быть:
@@ -83,10 +119,10 @@ def greet(name):
 # 	1.	Первый декоратор должен выводить “Начало выполнения”.
 # 	2.	Второй декоратор должен выводить “Конец выполнения”.
 
-@start_decorator
-@end_decorator
-def say_hello():
-    print("Привет!")
+# @start_decorator
+# @end_decorator
+# def say_hello():
+#     print("Привет!")
 
 
 # Когда вызываешь say_hello(), вывод должен быть:
@@ -99,9 +135,9 @@ def say_hello():
 #
 # Напиши декоратор, который будет возвращать новое значение из функции, например, увеличивать результат на 10. Пример:
 
-@increase_result_decorator
-def add(a, b):
-    return a + b
+# @increase_result_decorator
+# def add(a, b):
+#     return a + b
 
 # При вызове add(3, 4) результат должен быть 17, потому что результат (7) увеличивается на 10.
 #
