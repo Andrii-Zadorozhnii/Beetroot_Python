@@ -21,18 +21,18 @@ class Person:
         self.lastname = lastname
         self.age = age
 
-    def talk(self):
+    def called_talk(self):
         return f'"Hello, my name is {self.firstname} {self.lastname} and I’m {self.age} years old".'
 
 
 person_1 = Person('Carl', 'Johnson', 26)
-person_2 = Person('Alexa', 'Zadik', 32)
+person_2 = Person('Alexa', 'Goroh', 32)
 
 print(
-    person_1.talk()
+    person_1.called_talk()
 )
 print(
-    person_2.talk()
+    person_2.called_talk()
 )
 
 # Task 2
@@ -155,21 +155,21 @@ class TVController:
 
 controller = TVController(CHANNELS)
 
-print(controller.first_channel())  # BBC
+print(controller.first_channel())
 
-print(controller.last_channel())  # TV1000
+print(controller.last_channel())
 
-print(controller.turn_channel(1))  # BBC
+print(controller.turn_channel(1))
 
-print(controller.next_channel())  # Discovery
+print(controller.next_channel())
 
-print(controller.previous_channel())  # "BBC"
+print(controller.previous_channel())
 
-print(controller.current_channel())  # "BBC"
+print(controller.current_channel())
 
-print(controller.exists(0))  # "No"
-print(controller.exists(1))  # "No"
-print(controller.exists(2))  # "No"
-print(controller.exists(3))  # "No"
+print(controller.exists(0))
+print(controller.exists(1))
+print(controller.exists(2))
+print(controller.exists(3))
 
 print(controller.exists("BBC"))  # "Yes"
