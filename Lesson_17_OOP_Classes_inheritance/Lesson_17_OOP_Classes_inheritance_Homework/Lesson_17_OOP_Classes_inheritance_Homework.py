@@ -143,32 +143,102 @@ Product store
     '''
 )
 
+cash = 0
+
 
 class Product:
-    def __init__(self,
-                 product_type,
-                 product_name,
-                 product_price):
+    def __init__(self, product_type, product_name, product_price):
         self.product_type = product_type
         self.product_name = product_name
+        if product_price <= 0:
+            raise ValueError("Price should be more than 0")
         self.product_price = product_price
-
-class Product_Store
 
 
 class ProductStore:
-    pass
+    def __init__(self):
+        self.products = {}  # Хранит товары в формате {имя: {'product': product, 'amount': количество, 'price_with_markup': цена}}
+        self.income = 0
 
-# p = Product('Sport', 'Football T-Shirt', 100)
-#
-# p2 = Product('Food', 'Ramen', 1.5)
-#
-# s = ProductStore()
-#
-# s.add(p, 10)
-#
-# s.add(p2, 300)
-#
-# s.sell_product('Ramen', 10)
-#
-# assert s.get_product_info('Ramen') == ('Ramen', 290)
+    def add(self, product, amount):
+        if not isinstance(product, Product):
+            raise ValueError("Unknown object, expected Product")
+        if amount <= 0:
+            raise ValueError("Quantity should be more than 0")
+
+        if product.product_name in self.products:
+            self.products[product.product_name]['amount'] += amount
+        else:
+            price_with_markup = product.product_price * 1.3
+            self.products[product.product_name] = {
+                'product': product,
+                'amount': amount,
+                'price_with_markup': price_with_markup
+            }
+
+    def set_discount(self, identifier, percent, identifier_type='name'):
+        if percent <= 0 or percent >= 100:
+            raise ValueError("Discount should be between 0% and 100%")
+        for product_info in self.products.values():
+            product = product_info['product']
+            if (identifier_type == 'name' and product.product_name == identifier) or \
+                    (identifier_type == 'type' and product.product_type == identifier):
+                product_info['price_with_markup'] *= (1 - percent / 100)
+
+    def sell_product(self, product_name, amount):
+        if product_name not in self.products:
+            raise ValueError(f"Item '{product_name}' not in stock")
+        if amount <= 0:
+            raise ValueError("Quantity to sell should be more than 0")
+
+        product_info = self.products[product_name]
+        if product_info['amount'] < amount:
+            raise ValueError(f"Not enough '{product_name}' in stock to sell")
+
+        product_info['amount'] -= amount
+        self.income += product_info['price_with_markup'] * amount
+
+        if product_info['amount'] == 0:
+            del self.products[product_name]  # Удаляем товар, если его больше нет в наличии
+
+    def get_income(self):
+        return self.income
+
+    def get_all_products(self):
+        return [
+            {
+                'name': product_info['product'].product_name,
+                'type': product_info['product'].product_type,
+                'price': product_info['price_with_markup'],
+                'amount': product_info['amount']
+            }
+            for product_info in self.products.values()
+        ]
+
+    def get_product_info(self, product_name):
+        if product_name not in self.products:
+            raise ValueError(f"Item '{product_name}' not found in stock")
+        product_info = self.products[product_name]
+        return product_name, product_info['amount']
+
+
+# Пример использования
+p = Product('Sport', 'Football T-Shirt', 100)
+p2 = Product('Food', 'Ramen', 1.5)
+
+s = ProductStore()
+s.add(p, 10)
+s.add(p2, 300)
+
+s.sell_product('Ramen', 10)
+
+assert s.get_product_info('Ramen') == ('Ramen', 290)
+
+print("Income:", s.get_income())
+print("All items:", s.get_all_products())
+
+# Этот вызов вызовет ошибку, так как 'Milk' нет в магазине
+try:
+    print("Information regarding Food:", s.get_product_info("Milk"))
+except ValueError as e:
+    print(e)
