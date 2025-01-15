@@ -242,3 +242,33 @@ try:
     print("Information regarding Food:", s.get_product_info("Milk"))
 except ValueError as e:
     print(e)
+
+# Задание 4
+#
+# Пользовательское исключение
+#
+# Создайте свое собственное исключение с именем 'CustomException', вы можете унаследовать его от базового класса Exception, но расширить его функциональность для регистрации каждого сообщения об ошибке в файле с именем 'logs.txt'. Советы: используйте метод __init__ для расширения функциональности сохранения сообщений в файл
+
+print(
+    '''
+Task 4
+Custom exception
+    '''
+)
+
+
+class CustomException(Exception):
+
+    def __init__(self, msg):
+        super().__init__(msg)
+        self.log_message(msg)
+
+    def log_message(self, msg):
+        with open('logs.txt', 'a') as file:
+            file.write(f"{msg}\n")
+
+
+try:
+    raise CustomException("Это пользовательское исключение")
+except CustomException as e:
+    print(f"Исключение перехвачено: {e}")
