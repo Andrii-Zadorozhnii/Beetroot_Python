@@ -127,12 +127,21 @@ class TVController:
         return f'You are turned back to channel: {self.channels[self.channel_index]}'
 
     def next_channel(self):
-        self.channel_index += 1
-        return f'You are jumped to channel r: {self.channels[self.channel_index]}'
+
+        if self.channel_index > len(self.channels) - 1:
+            self.channel_index = 0
+            return f'You are jumped to channel r: {self.channels[self.channel_index]}'
+        else:
+            self.channel_index += 1
+            return f'You are jumped to channel r: {self.channels[self.channel_index]}'
 
     def previous_channel(self):
-        self.channel_index -= 1
-        return f'Return to previous channel: {self.channels[self.channel_index]}'
+        if self.channel_index == 0:
+            self.channel_index = -1
+            return f'Return to previous channel: {self.channels[self.channel_index]}'
+        else:
+            self.channel_index -= 1
+            return f'Return to previous channel: {self.channels[self.channel_index]}'
 
     def current_channel(self):
         return f'Current channel is: {self.channels[self.channel_index]}'
