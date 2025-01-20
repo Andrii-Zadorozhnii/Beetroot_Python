@@ -140,14 +140,61 @@ class Account:
 
     def _change_account_balance(self, amount):
         self._account_balance += amount
+        # print(f'Account balance: {self._account_balance}')
+
+    def display_account_balance(self):
+        print(f'Account balance: {self._account_balance}')
 
 
 class GoldAccount(Account):
+    def gold_balance(self):
+        self.__display_account_balance()
+        # print(f'Gold balance: {self._account_balance}')
+
+    def change_gold_balance(self, amount):
+        self.__change_account_balance(amount)
+
     def __display_account_balance(self):
-        print(f"Account balance: {self._account_balance}")
+        print(f"Gold balance: {self._account_balance}")
 
     def __change_account_balance(self, amount):
         self._account_balance += amount
+        # print(f'Account balance: {self._account_balance}')
 
     def change_account_balance(self, amount):
         self._change_account_balance(amount)
+        # print(f'Account balance: {self._account_balance}')
+
+
+client_1 = Client('Igor Pupkin', '17.05.1978')
+client_1.client_data()
+
+account_1 = Account(client_1)
+#
+gold_client = GoldAccount(client_1)
+
+account_1.display_account_balance()
+
+gold_client.gold_balance()
+
+account_1._change_account_balance(100)
+account_1.display_account_balance()
+
+gold_client.change_gold_balance(200)
+gold_client.gold_balance()
+
+account_1._change_account_balance(100)
+account_1.display_account_balance()
+
+gold_client.change_gold_balance(200)
+gold_client.gold_balance()
+
+# Restricted access / secret method =)
+
+print(
+    '\nCareful access below\n'
+    'gold_client._GoldAccount__change_account_balance(20000)'
+)
+gold_client._GoldAccount__change_account_balance(20000)
+
+gold_client.gold_balance()
