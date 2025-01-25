@@ -5,7 +5,7 @@ from Lesson_21_Testing_Classwork import *
 class BankClientTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.client = BankClient('Petrenko', 'Ivan', 'Ivanovych', 35, 36000)
+        self.client = BankClient('Petrenkos', 'Ivan', 'Ivanovych', 35, 36000)
         self.another_client = BankClient('Shevchenko', 'Taras', 'Hryhorovych', 45, 50000, current_debt=15000)
 
     def test_initialization(self):
@@ -27,7 +27,7 @@ class BankClientTestCase(unittest.TestCase):
         self.assertEqual(self.client.current_debt, 5000)
 
     def test_compare_clients(self):
-        self.another_client.last_name = 'Petrenko'
+        self.another_client.last_name = 'Petrenkos'
         self.another_client.name = 'Ivan'
         self.another_client.middle_name = 'Ivanovych'
         self.another_client.age = 35
