@@ -1,0 +1,15 @@
+.nav-menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    background-color: #0E0E0E;
+    color: white;
+}
