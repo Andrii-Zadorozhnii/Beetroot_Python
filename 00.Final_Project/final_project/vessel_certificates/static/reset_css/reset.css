@@ -359,3 +359,9 @@ textarea {
     color: #000;
     padding: 0.2em 0;
 }
+
+a {
+    color: inherit; /* Наследует цвет текста родителя */
+    text-decoration: none; /* Убирает подчеркивание */
+    cursor: pointer;
+}
