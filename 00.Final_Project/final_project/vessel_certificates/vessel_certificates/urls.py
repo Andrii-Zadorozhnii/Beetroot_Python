@@ -17,10 +17,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from products.views import index
+from basket.views import basket
+from catalog.views import catalog
+from company.views import company
+from contacts.views import contacts
+from information.views import information
 from main_page.views import main_page
+from news.views import news
+from products.views import products
+from service.views import services
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', main_page, name='home'),
-    path('/catalog/', index, name='catalog'),
+    path('', main_page, name=''),
+    path('catalog/', catalog, name='catalog'),
+    path('contacts/', contacts, name='contacts'),
+    path('products/', products, name='products'),
+    path('services/', services, name='services'),
+    path('news/', news, name='news'),
+    path('basket/', basket, name='basket'),
+    path('company/', company, name='company'),
+    path('information/', information, name='information'),
 ]

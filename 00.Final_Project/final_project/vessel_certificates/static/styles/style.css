@@ -52,32 +52,3 @@ button{
     }
 }
 
-.image-container {
-      position: relative;
-      /*width: 100%;*/
-      max-width: 400px;
-    }
-.image-container img {
-      /*width: 100%;*/
-      height: auto;
-    }
-.overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-.image-container:hover .overlay {
-      opacity: 1;
-    }
-.overlay .btn {
-      margin-top: 20px;
-    }

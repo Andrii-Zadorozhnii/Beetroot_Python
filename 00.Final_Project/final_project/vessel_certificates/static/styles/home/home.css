@@ -37,6 +37,29 @@
   color: white;
 }
 
+.service-title {
+  margin: 0 auto;
+  margin-top: 5.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 0.25rem solid darkred;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 2.8rem;
+  color: 1d1d1d;
+  text-align: center;
+  max-width: 53.5rem;
+}
+.service-subtitle {
+  max-width: 53.5rem;
+  margin: 0 auto;
+  margin-top: 1.6rem;
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 2.8rem;
+  color: 1d1d1d;
+  text-align: center;
+}
+
 .service-cards ul {
   display: flex;
   justify-content: space-between;
@@ -46,6 +69,40 @@
 
 .text-center h3 {
   margin-bottom: 2rem;
+}
+
+.image-container {
+  position: relative;
+  /*width: 100%;*/
+  max-width: 400px;
+}
+
+.image-container img {
+  /*width: 100%;*/
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.image-container:hover .overlay {
+  opacity: 1;
+}
+
+.overlay .btn {
+  margin-top: 20px;
 }
 
 /*# sourceMappingURL=home.css.map */
