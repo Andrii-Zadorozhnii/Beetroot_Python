@@ -45,13 +45,17 @@ class Stack():
     def __str__(self):
         result = '<Stack>\n'
         for index, item in enumerate(self.list):
-            result += f'Index: {index}, Value: {str(item)}\n'
+            result += f'Index: {index + 1}, Value: {str(item)}\n'
         return result
 
 
 stack = Stack()
 
 for item in random_list_1:
+    stack.push(item)
+for item in random_list_2:
+    stack.push(item)
+for item in random_list_3:
     stack.push(item)
 
 print(stack)
