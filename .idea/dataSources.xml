@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="postgres@localhost" uuid="adcf6eff-9972-4630-a06c-6dcbab2add1e">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="d1093fe7-995d-44c9-8728-673af8914cf8" uuid="b7ef3a9f-fbf1-43d6-8dd3-95ff25e2c0c7">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/Lesson_29_SQL/d1093fe7-995d-44c9-8728-673af8914cf8.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.45.1/org/xerial/sqlite-jdbc/3.45.1.0/sqlite-jdbc-3.45.1.0.jar</url>
+        </library>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.45.1/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar</url>
+        </library>
+      </libraries>
+    </data-source>
+  </component>
+</project>
