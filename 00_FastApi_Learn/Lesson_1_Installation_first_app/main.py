@@ -10,21 +10,23 @@ app = FastAPI()
 books = [
     {
         "id": 1,
-     "title": "Преступление и наказание",
-     "author": "Фёдор Достоевский"
+        "title": "Преступление и наказание",
+        "author": "Фёдор Достоевский"
     },
     {
         "id": 2,
-     "title": "Мастер и Маргарита",
-     "author": "Михаил Булгаков"
+        "title": "Мастер и Маргарита",
+        "author": "Михаил Булгаков"
     }
 ]
+
 
 @app.get('/books',
          tags=['Books 📚'],
          summary='Receive all books')
 def read_books():
     return books
+
 
 @app.get('/books/{book_id}',
          tags=['Books 📚'],
@@ -37,9 +39,11 @@ def get_book(book_id: int):
             detail='Book is not found')
     return book
 
+
 class NewBook(BaseModel):
     title: str
     author: str
+
 
 @app.post('/books',
           tags=['Books 📚'],
@@ -53,6 +57,7 @@ def create_book(new_book: NewBook):
     return {
         'success': True,
         'message': 'Book added'}
+
 
 if __name__ == '__main__':
     uvicorn.run("main:app", reload=True)
