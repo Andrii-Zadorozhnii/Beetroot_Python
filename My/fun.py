@@ -1,68 +1,67 @@
-# def binary_search(arr, target):
-#     low = 0
-#     high = len(arr) - 1
-#     steps = 0
-#
-#     while low <= high:
-#         steps += 1
-#         mid = (low + high) // 2
-#         if arr[mid] == target:
-#             print(arr[mid])
-#             return mid, steps
-#         elif arr[mid] < target:
-#             print(arr[mid])
-#             low = mid + 1
-#         else:
-#             high = mid - 1
-#
-#     return -1, steps
-#
-#
-# # Пример использования
-# def array_list(number):
-#     counter = 0
-#     new_arr = []
-#     while counter <= number:
-#         new_arr.append(counter)
-#         counter += 1
-#     return new_arr
-#
-#
-# arr = array_list(9999)
-# # print(arr)
-#
-# target = 9999
-#
-# result, steps = binary_search(arr, target)
-#
-# if result != -1:
-#     print(
-#         f"Элемент найден на индексе {result}. Количество шагов: {steps}"
-#     )
-# else:
-#     print(
-#         f"Элемент не найден. Количество шагов: {steps}"
-#     )
-#
-#
-# def bubble_sort(arr):
-#     n = len(arr)
-#     steps = 0
-#     for i in range(n):
-#         swapped = False
-#         for j in range(0, n - i - 1):
-#             steps += 1
-#             if arr[j] > arr[j + 1]:
-#                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
-#                 swapped = True
-#         if not swapped:
-#             break
-#     return arr, steps
-#
-#
-# # Пример использования
-# arr = [64, 34, 25, 12, 22, 11, 90]
-# sorted_arr, steps = bubble_sort(arr)
-#
-# print(f"Отсортированный массив: {sorted_arr}")
-# print(f"Количество шагов: {steps}")
+import asyncio
+import aiohttp
+import random
+
+
+async def fetch_exchange_rate() -> float:
+    """
+    Получает курс обмена RON -> UAH из API.
+
+    :return: Курс обмена (сколько UAH за 1 RON)
+    """
+    url = "https://api.exchangerate-api.com/v4/latest/RON"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+            return data["rates"]["UAH"]  # Достаём курс RON -> UAH
+
+
+async def calculate_price() -> float:
+    """
+    Вычисляет цену колес самоката в гривнах.
+
+    :return: Цена колес в UAH
+    """
+    price_ron = 175  # Цена в леях
+
+    exchange_rate = await fetch_exchange_rate()
+    price_uah = price_ron * exchange_rate
+
+    print(
+        "Цена колес самоката в гривнах:", round(price_uah, 2)
+    )
+
+    return price_uah
+
+
+async def calculate_wear_rate() -> None:
+    """
+    Рассчитывает износостойкость колес самоката.
+    """
+    total_distance = 5000  # Замена каждые 5000 км
+    avg_speed = random.randint(40, 50)  # Случайная скорость в диапазоне 40-50 км/ч
+
+    hours_until_replacement = total_distance / avg_speed  # Часы до замены
+
+    print(
+        "📌 Средняя скорость:", avg_speed, "км/ч"
+    )
+    print(
+        "⌛ Можно кататься примерно", round(hours_until_replacement, 2), "часов до замены колес."
+    )
+    print(
+        "🚲 Максимальный пробег без замены:", total_distance, "км"
+    )
+
+
+async def main():
+    """
+    Главная асинхронная функция: рассчитывает цену и износостойкость.
+    """
+    await calculate_price()
+    await calculate_wear_rate()
+
+
+# Запуск асинхронной задачи
+asyncio.run(main())
