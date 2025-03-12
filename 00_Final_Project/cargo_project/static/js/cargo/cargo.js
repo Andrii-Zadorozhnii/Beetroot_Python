@@ -1,123 +1,113 @@
-'use strict';
+      let map;
+      let directionsService;
+      let directionsRenderer;
+      let geocoder;
 
-async function fetchCargoData() {
-    try {
-        const response = await fetch("/api/cargo/");
-        return await response.json();
-    } catch (error) {
-        console.error("Ошибка загрузки данных:", error);
-        return [];
-    }
-}
+      // Инициализация карты
+      function initMap() {
+        const defaultOrigin = { lat: 0, lng: 0 }; // Сан-Франциско
+        const defaultDestination = { lat: 0, lng: 0 }; // Лос-Анджелес
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const cargoData = await fetchCargoData();
-    new Commutes(CONFIGURATION, cargoData);
-});
-
-class Commutes {
-    constructor(configuration, cargoData) {
-        this.configuration = configuration;
-        this.commutesMap = null;
-        this.directionsRenderer = null;
-        this.cargoData = cargoData;
-
-        this.initMapView();
-        this.renderCargoCards();
-    }
-
-    initMapView() {
-        this.commutesMap = new google.maps.Map(
-            document.querySelector(".map-view"),
-            this.configuration.mapOptions
-        );
-        this.directionsRenderer = new google.maps.DirectionsRenderer();
-        this.directionsRenderer.setMap(this.commutesMap);
-    }
-
-    renderCargoCards() {
-        const cargoCardsContainer = document.getElementById("cargo-cards");
-        this.cargoData.forEach((cargo) => {
-            const card = document.createElement("div");
-            card.className = "cargo-card";
-            card.innerHTML = `
-                <h3>${cargo.name}</h3>
-                <p><strong>From:</strong> ${cargo.origin}</p>
-                <p><strong>To:</strong> ${cargo.destination}</p>
-            `;
-            card.addEventListener("click", () => this.handleCargoClick(cargo));
-            cargoCardsContainer.appendChild(card);
-        });
-    }
-
-   handleCargoClick(cargo) {
-    console.log('Clicked Cargo:', cargo); // Проверим, что передается в cargo
-    this.updateRouteInfo({
-        origin: cargo.origin,
-        destination: cargo.destination,
-    });
-
-    this.getDirections(cargo.origin, cargo.destination).then((response) => {
-        if (!response || !response.routes || response.routes.length === 0) {
-            console.error('No route found for this cargo.');
-            return;
-        }
-
-        const leg = response.routes[0].legs[0];
-        this.updateRouteInfo({
-            origin: cargo.origin,
-            destination: cargo.destination,
-            distance: leg.distance.text,
-            duration: leg.duration.text,
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 7,
+          center: defaultOrigin,
         });
 
-        this.directionsRenderer.setDirections(response);
-    }).catch((error) => {
-        console.error('Error fetching directions:', error);
-    });
-}
-
-    getDirections(origin, destination) {
-    const request = {
-        origin,
-        destination,
-        travelMode: this.configuration.defaultTravelMode,
-    };
-
-    const directionsService = new google.maps.DirectionsService();
-
-    return new Promise((resolve, reject) => {
-        directionsService.route(request, (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
-                resolve(result);
-            } else {
-                reject(new Error('Directions request failed due to ' + status));
-            }
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+          map: map,
         });
-    });
-}
 
-    updateRouteInfo(data) {
-        document.getElementById("origin-info").textContent = data.origin;
-        document.getElementById("destination-info").textContent = data.destination;
-        document.getElementById("distance-info").textContent = data.distance || "N/A";
-        document.getElementById("duration-info").textContent = data.duration || "N/A";
-    }
-}
+        geocoder = new google.maps.Geocoder();
 
-const CONFIGURATION = {
-  defaultTravelMode: "DRIVING", // Режим передвижения по умолчанию (автомобиль)
-  distanceMeasurementType: "METRIC", // Метрическая система (км, м)
-  mapOptions: {
-    center: { lat: 50.4503596, lng: 30.5241376 }, // Начальный центр карты (Киев)
-    fullscreenControl: false,
-    mapTypeControl: true,
-    streetViewControl: true,
-    zoom: 6,
-    zoomControl: true,
-    maxZoom: 20,
-    mapId: "",
-  },
-  mapsApiKey: "AIzaSyCfB1EAVuIvBnDjolH6SOtuami3gaLuSNI",
-};
+        // Маркеры для начальной и конечной точки
+        new google.maps.Marker({
+          position: defaultOrigin,
+          map: map,
+          title: "Origin",
+        });
 
+        new google.maps.Marker({
+          position: defaultDestination,
+          map: map,
+          title: "Destination",
+        });
+
+        // Отображение маршрута
+        displayRoute(defaultOrigin, defaultDestination);
+      }
+
+      // Функция обновления карты при клике на карточку
+      function updateMap(origin, destination) {
+        geocodeAddress(origin, destination);
+      }
+
+      // Функция геокодирования
+      function geocodeAddress(origin, destination) {
+        geocoder.geocode({ address: origin }, function (results, status) {
+          if (status === "OK") {
+            const originCoords = results[0].geometry.location;
+
+            geocoder.geocode({ address: destination }, function (results, status) {
+              if (status === "OK") {
+                const destinationCoords = results[0].geometry.location;
+
+                // Обновляем информацию о маршруте
+                document.getElementById("route-origin").innerText = origin;
+                document.getElementById("route-destination").innerText = destination;
+
+                // Рисуем новый маршрут на карте
+                displayRoute(originCoords, destinationCoords);
+              } else {
+                console.error("Geocode failed for destination: " + status);
+              }
+            });
+          } else {
+            console.error("Geocode failed for origin: " + status);
+          }
+        });
+      }
+
+      // Функция для отображения маршрута на карте
+      function displayRoute(origin, destination) {
+        const request = {
+          origin: origin,
+          destination: destination,
+          travelMode: google.maps.TravelMode.DRIVING,
+        };
+
+        directionsService.route(request, function (result, status) {
+          if (status === google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(result);
+          } else {
+            console.error("Directions request failed: " + status);
+          }
+        });
+      }
+
+      // Функция для фильтрации карточек товаров
+      function filterCargos() {
+        const originSelect = document.getElementById("origin-select");
+        const destinationSelect = document.getElementById("destination-select");
+        const selectedOrigin = originSelect.value;
+        const selectedDestination = destinationSelect.value;
+
+        const cargoCards = document.querySelectorAll(".cargo-card");
+
+        cargoCards.forEach((card) => {
+          const origin = card.getAttribute("data-origin");
+          const destination = card.getAttribute("data-destination");
+
+          const originMatch = !selectedOrigin || origin === selectedOrigin;
+          const destinationMatch = !selectedDestination || destination === selectedDestination;
+
+          if (originMatch && destinationMatch) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      }
+
+      // Инициализация карты при загрузке
+      window.onload = initMap;

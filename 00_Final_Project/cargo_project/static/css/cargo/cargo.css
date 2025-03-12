@@ -71,3 +71,14 @@
         font-size: 14px;
         color: #555;
       }
+
+      .filtration_1{
+          display: block;
+     }
+
+      .flex{
+          max-width: 200px;
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 7px;
+      }
