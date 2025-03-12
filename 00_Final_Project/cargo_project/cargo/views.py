@@ -1,8 +1,14 @@
+from tkinter.font import names
+
 from django.shortcuts import render
 from .models import Cargo
 from cargo_project.service import get_route_info
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyCfB1EAVuIvBnDjolH6SOtuami3gaLuSNI'
+
+def main_page(request):
+    return render(request,'base/base.html')
+
 
 
 def cargo_list(request):
@@ -21,8 +27,8 @@ def cargo_list(request):
                 cargo.duration = route_info['duration']
                 cargo.save()  # Сохраняем обновленные данные в базу
 
-    return render(request, 'cargo.html', {
+    return render(request, 'cargo/cargo.html', {
         'cargos': cargos,
         'origins': origins,
         'destinations': destinations,
-    })
+    }, )

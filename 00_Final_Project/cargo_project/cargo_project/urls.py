@@ -15,9 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from cargo import views  # импорт представлений из приложения cargo
+from cargo import views
 
 urlpatterns = [
-    path('', views.cargo_list, name='cargo_list'),  # корневой путь
+    path('', views.main_page, name='home'),  # корневой путь
     path('cargo/', views.cargo_list, name='cargo_list'),  # или другой путь
 ]

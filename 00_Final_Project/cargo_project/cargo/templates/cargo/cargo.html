@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Commutes and Destinations Map</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_style %}
     <link rel="stylesheet" href="/static/css/cargo/cargo.css">
-  </head>
-  <body>
+{% endblock%}
 
 
-    <!-- Левая панель с карточками товаров -->
-    <!-- Фильтры для сортировки -->
+{% block content %}
 
-    <div class="cargo-list">
+<!-- Левая панель с карточками товаров -->
+<!-- Фильтры для сортировки -->
+<div class="cargo-list">
         <div class="filters" id="filtration_1">
             <div class="flex" >
       <label class="filtration_1" for="origin-select">From:</label>
@@ -49,8 +47,8 @@
       {% endfor %}
     </div>
 
-    <!-- Правая панель с картой и информацией о маршруте -->
-    <div class="map-container">
+<!-- Правая панель с картой и информацией о маршруте -->
+<div class="map-container">
       <div id="map" class="map-view"></div>
       <div class="route-info">
         <h3>Route Data</h3>
@@ -61,11 +59,18 @@
       </div>
     </div>
 
-    <script src='/static/js/cargo/cargo.js'></script>
+
+{% endblock %}
+
+
+
+{% block extra_scripts %}
+        <script src='/static/js/cargo/cargo.js'></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfB1EAVuIvBnDjolH6SOtuami3gaLuSNI&callback=initMap&libraries=places,geometry&solution_channel=GMP_QB_commutes_v3_c"
       async
       defer
     ></script>
-  </body>
-</html>
+{% endblock %}
+
+
