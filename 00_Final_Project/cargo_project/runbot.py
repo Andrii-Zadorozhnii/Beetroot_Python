@@ -1,34 +1,29 @@
-"""
-📦 Телеграм-бот для управления грузоперевозками.
-
-Основные функции:
-- Добавление нового груза с детальной информацией
-- Редактирование существующих данных груза
-- Удаление грузов
-- Просмотр всех зарегистрированных грузов пользователя
-
-Используемые технологии:
-- Асинхронная работа с Telegram API (aiogram)
-- Взаимодействие с PostgreSQL (asyncpg)
-- Хеширование данных для генерации уникальных ID
-- Состояния пользователей для обработки многошаговых операций
-"""
-
 import asyncio
 import asyncpg
 import hashlib
+import re
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
+import logging
+
+from cargo_project.settings import BOT_TOKEN
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # 🔐 Конфигурационные параметры
-TOKEN = "7671224104:AAGO1E0ssPTXjko_Ji7n3w0l3S8B52EeWzQ"  # Токен вашего телеграм-бота
+TOKEN = BOT_TOKEN  # Токен вашего телеграм-бота
 DB_CONFIG = {  # Параметры подключения к PostgreSQL
     "user": "postgres",
     "password": "postgres",
     "database": "cargo_db",
     "host": "localhost"
 }
+
+# Соль для хеширования (должна быть уникальной и храниться в безопасном месте)
+SALT = "your_unique_salt_value"
 
 # 🏗️ Инициализация основных компонентов бота
 bot = Bot(token=TOKEN)
@@ -79,13 +74,77 @@ confirm_menu = ReplyKeyboardMarkup(
 )
 
 
+def hash_data(data: str) -> str:
+    """
+    Хеширует данные с использованием SHA-256 и соли.
+    Возвращает строку из 64 символов (хеш).
+    """
+    return hashlib.sha256((data + SALT).encode()).hexdigest()
+
+
 def generate_unique_id(data: dict) -> str:
     """
     Генерирует уникальный идентификатор перевозки на основе хеша данных.
     Использует SHA-256 для создания 10-символьного хеша.
     """
     raw_data = f"{data['name']}{data['origin']}{data['destination']}{data['company']}{data['phone']}{data['payment']}"
-    return hashlib.sha256(raw_data.encode()).hexdigest()[:10]
+    return hash_data(raw_data)[:10]
+
+
+async def get_cargo_by_id(shipment_id: str, user_id: int) -> dict:
+    """
+    Получает данные о грузе по его идентификатору и идентификатору пользователя.
+    Если груз не найден или не принадлежит пользователю, выбрасывает исключение.
+    """
+    try:
+        conn = await asyncpg.connect(**DB_CONFIG)
+        cargo = await conn.fetchrow(
+            """
+            SELECT * FROM cargo_cargo 
+            WHERE shipment_id = $1 AND user_id = $2
+            """,
+            shipment_id, hash_data(str(user_id))  # Хешируем user_id
+        )
+        await conn.close()
+
+        if not cargo:
+            logger.warning(f"Груз не найден: shipment_id={shipment_id}, user_id={hash_data(str(user_id))}")
+            raise ValueError("Груз не найден или у вас нет прав доступа.")
+
+        return dict(cargo)  # Конвертация в словарь
+    except Exception as e:
+        logger.error(f"Ошибка при получении груза: {e}")
+        raise
+
+
+async def validate_phone(phone: str) -> bool:
+    """Проверка корректности номера телефона"""
+    phone_pattern = re.compile(r"^\+?[1-9]\d{1,14}$")
+    return bool(phone_pattern.match(phone))
+
+
+async def validate_payment(payment: str) -> bool:
+    """Проверка корректности суммы оплаты"""
+    try:
+        amount = float(payment)
+        return amount > 0
+    except ValueError:
+        return False
+
+
+async def validate_name(name: str) -> bool:
+    """Проверка корректности названия груза"""
+    return 2 <= len(name) <= 100
+
+
+async def validate_company(company: str) -> bool:
+    """Проверка корректности названия компании"""
+    return 2 <= len(company) <= 100
+
+
+async def validate_description(description: str) -> bool:
+    """Проверка корректности комментария"""
+    return len(description) <= 500
 
 
 @dp.message(Command("start"))
@@ -98,13 +157,16 @@ async def start(message: Message):
 async def show_all_cargos(message: Message):
     """Отображение всех грузов пользователя в форматированном виде"""
     user_id = message.chat.id
+    logger.info(f"Пользователь {user_id} запросил список грузов.")
+
+    # Получаем грузы для текущего пользователя
     cargos = await get_user_cargos(user_id)
 
     if not cargos:
         await message.answer("У вас нет сохраненных грузов.")
         return
 
-    # 📝 Формирование красиво отформатированного списка
+    # Формируем ответ
     response = "📦 Список ваших грузов:\n\n"
     for cargo in cargos:
         response += f"🔸 Номер перевозки: {cargo['shipment_id']}\n"
@@ -122,10 +184,10 @@ async def get_user_cargos(user_id: int) -> list:
     conn = await asyncpg.connect(**DB_CONFIG)
     cargos = await conn.fetch(
         "SELECT * FROM cargo_cargo WHERE user_id = $1",
-        user_id
+        hash_data(str(user_id))  # Хешируем user_id и передаем как строку
     )
     await conn.close()
-    return [dict(cargo) for cargo in cargos]  # Конвертация в список словарей
+    return [dict(cargo) for cargo in cargos]
 
 
 @dp.message()
@@ -163,38 +225,51 @@ async def process_cargo_data(message: Message):
     text = message.text
     current_data = user_data[user_id]["data"]
 
-    # 📝 Последовательный сбор информации о грузе
     if "name" not in current_data:
-        current_data["name"] = text
-        await message.answer("Введите пункт отправления:")
+        if await validate_name(text):
+            current_data["name"] = text
+            await message.answer("Введите пункт отправления (город):")
+        else:
+            await message.answer("Название груза должно быть от 2 до 100 символов. Попробуйте еще раз.")
     elif "origin" not in current_data:
         current_data["origin"] = text
-        await message.answer("Введите пункт назначения:")
+        await message.answer("Введите пункт назначения (город):")
     elif "destination" not in current_data:
         current_data["destination"] = text
         await message.answer("Введите название компании:")
     elif "company" not in current_data:
-        current_data["company"] = text
-        await message.answer("Введите номер телефона менеджера:")
+        if await validate_company(text):
+            current_data["company"] = text
+            await message.answer("Введите номер телефона менеджера:")
+        else:
+            await message.answer("Название компании должно быть от 2 до 100 символов. Попробуйте еще раз.")
     elif "phone" not in current_data:
-        current_data["phone"] = text
-        await message.answer("Введите сумму оплаты (в USD):")
+        if await validate_phone(text):
+            current_data["phone"] = text
+            await message.answer("Введите сумму оплаты (в USD):")
+        else:
+            await message.answer("Номер телефона должен быть в международном формате. Попробуйте еще раз.")
     elif "payment" not in current_data:
-        try:
+        if await validate_payment(text):
             current_data["payment"] = float(text)
-        except ValueError:
-            await message.answer("Ошибка! Введите корректную сумму оплаты.")
-            return
-        await message.answer("Введите ссылку на изображение груза:")
+            await message.answer("Введите ссылку на изображение груза:")
+        else:
+            await message.answer("Сумма оплаты должна быть положительным числом. Попробуйте еще раз.")
     elif "image" not in current_data:
-        current_data["image"] = text
-        await message.answer("Введите комментарий к грузу:")
+        if text.startswith("http"):
+            current_data["image"] = text
+            await message.answer("Введите комментарий к грузу:")
+        else:
+            await message.answer("Ссылка на изображение должна начинаться с 'http'. Попробуйте еще раз.")
     elif "description" not in current_data:
-        current_data["description"] = text
-        current_data["shipment_id"] = generate_unique_id(current_data)
-        await save_to_db(user_id)
-        await message.answer(f"✅ Груз сохранен!\n{format_cargo_data(current_data)}", reply_markup=main_menu)
-        del user_data[user_id]  # Очистка временных данных
+        if await validate_description(text):
+            current_data["description"] = text
+            current_data["shipment_id"] = generate_unique_id(current_data)
+            await save_to_db(user_id)
+            await message.answer(f"✅ Груз сохранен!\n{format_cargo_data(current_data)}", reply_markup=main_menu)
+            del user_data[user_id]  # Очистка временных данных
+        else:
+            await message.answer("Комментарий должен быть не более 500 символов. Попробуйте еще раз.")
 
 
 async def save_to_db(user_id: int):
@@ -211,7 +286,7 @@ async def save_to_db(user_id: int):
         data["shipment_id"], data["name"], data["origin"],
         data["destination"], data["company"], data["phone"],
         data["payment"], data["image"], data["description"],
-        user_id
+        hash_data(str(user_id))  # Хешируем user_id и передаем как строку
     )
     await conn.close()
 
@@ -271,7 +346,7 @@ async def update_cargo_in_db(shipment_id: str, field: str, value: str, user_id: 
         SET {field} = $1 
         WHERE shipment_id = $2 AND user_id = $3
         """,
-        value, shipment_id, user_id
+        value, shipment_id, hash_data(str(user_id))  # Хешируем user_id
     )
     await conn.close()
 
@@ -310,7 +385,7 @@ async def delete_cargo_from_db(shipment_id: str, user_id: int):
         DELETE FROM cargo_cargo 
         WHERE shipment_id = $1 AND user_id = $2
         """,
-        shipment_id, user_id
+        shipment_id, hash_data(str(user_id))  # Хешируем user_id
     )
     await conn.close()
 
@@ -327,7 +402,6 @@ def format_cargo_data(data: dict) -> str:
         f"🏢 Компания: {data['company']}\n"
         f"📞 Телефон: {data['phone']}\n"
         f"💰 Оплата: {data['payment']} USD\n"
-        f"🖼 Изображение: {data['image']}\n"
         f"📝 Комментарий: {data['description']}\n"
         f"🔑 Номер перевозки: {data['shipment_id']}"
     )

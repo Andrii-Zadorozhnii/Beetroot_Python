@@ -39,11 +39,6 @@ h3, h4 {
   text-wrap: balance;
 }
 
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
-  color: currentColor;
-}
 
 /* Make images easier to work with */
 img,
@@ -157,6 +152,16 @@ footer{
 body{
   display: flex;
   flex-wrap: wrap;
+}
+
+a {
+    color: white; /* Белый цвет текста для ссылок */
+    text-decoration: none; /* Убираем подчеркивание (опционально) */
+}
+
+a:hover {
+    color: #ccc; /* Цвет при наведении (опционально) */
+    text-decoration: underline; /* Подчеркивание при наведении (опционально) */
 }
 
 
