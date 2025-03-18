@@ -1,5 +1,5 @@
 footer, header {
-        position: fixed; /* Фиксированное позиционирование */
+        /* Фиксированное позиционирование */
         /*bottom: 0; !* Прижимаем к нижней части экрана *!*/
         left: 0;
         width: 100%;
@@ -29,5 +29,11 @@ footer{
 .button:hover{
         background-color: lightskyblue;
 }
+
+#home_img{
+        width: 3rem;
+        border-radius: 50%;
+}
+
 
 

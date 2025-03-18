@@ -1,0 +1,26 @@
+<!-- templates/account/login.html -->
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Войти{% endblock %}
+
+{% block content %}
+<div class="login-form">
+    <h2>Войти</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/account/login.css' %}">
+{% endblock %}
+
+{% block extra_script %}
+{% endblock %}
+
+{% block extra_style %}
+{% endblock %}

@@ -14,6 +14,13 @@ class Cargo(models.Model):
     payment = models.CharField(max_length=255)
     image = models.CharField(max_length=255, null=True, blank=True)
 
+class Customer(models.Model):
+    customer_name = models.CharField(max_length=255)
+    customer_description = models.CharField(max_length=255)
+    customer_location = models.CharField(max_length=255)
+    customer_location_url = models.CharField(max_length=255, null=True)
+    customer_web_site = models.CharField(max_length=255, null=True)
+
 
     def __str__(self):
         return self.name

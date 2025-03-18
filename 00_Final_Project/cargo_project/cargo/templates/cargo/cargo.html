@@ -7,10 +7,10 @@
 
 
 {% block content %}
-
+<div class="content">
 <!-- Левая панель с карточками товаров -->
 <!-- Фильтры для сортировки -->
-<div class="cargo-list">
+    <div class="cargo-list">
         <div class="filters" id="filtration_1">
             <div class="flex" >
       <label class="filtration_1" for="origin-select">From:</label>
@@ -48,7 +48,7 @@
     </div>
 
 <!-- Правая панель с картой и информацией о маршруте -->
-<div class="map-container">
+    <div class="map-container">
       <div id="map" class="map-view"></div>
       <div class="route-info">
         <h3>Route Data</h3>
@@ -60,9 +60,8 @@
     </div>
 
 
+</div>
 {% endblock %}
-
-
 
 {% block extra_scripts %}
     <script src='../../../static/js/cargo/cargo.js'></script>
@@ -71,6 +70,22 @@
       async
       defer
     ></script>
+
+<script>
+    window.addEventListener('load', adjustLayout);
+window.addEventListener('resize', adjustLayout);
+
+function adjustLayout() {
+  // Получаем высоту header и footer
+  const headerHeight = document.querySelector('header').offsetHeight;
+  const footerHeight = document.querySelector('footer').offsetHeight;
+
+  // Вычисляем доступную высоту для контента
+  const contentHeight = window.innerHeight - headerHeight - footerHeight;
+
+  // Устанавливаем высоту для блоков cargo-list и map-container
+  document.querySelector('.cargo-list').style.height = contentHeight + 'px';
+  document.querySelector('.map-container').style.height = contentHeight + 'px';
+}
+</script>
 {% endblock %}
-
-
