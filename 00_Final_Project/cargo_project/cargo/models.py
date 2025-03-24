@@ -12,9 +12,10 @@ class Cargo(models.Model):
     company = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     payment = models.CharField(max_length=255)
-    image = models.CharField(max_length=255, null=True, blank=True)
+    # image = models.CharField(max_length=255, null=True, blank=True)
 
 class Customer(models.Model):
+    user_id = models.BigIntegerField(unique=True)
     customer_name = models.CharField(max_length=255)
     customer_description = models.CharField(max_length=255)
     customer_location = models.CharField(max_length=255)
