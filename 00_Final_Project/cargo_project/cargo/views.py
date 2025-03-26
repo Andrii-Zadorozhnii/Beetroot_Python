@@ -1,5 +1,11 @@
+from http.client import HTTPResponse
 from tkinter.font import names
 
+
+from django.contrib.auth import authenticate, login as user_login, logout as user_logout
+from django.contrib.auth.models import User
+
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -8,7 +14,6 @@ from .models import Customer
 
 from cargo_project.service import get_route_info
 
-GOOGLE_MAPS_API_KEY = 'AIzaSyCfB1EAVuIvBnDjolH6SOtuami3gaLuSNI'
 
 def main_page(request):
     return render(request,'home/index.html')
@@ -51,4 +56,54 @@ def customers(request):
 
 def products(request):
     return render(request, 'products/products.html')
+
+
+def login_view(request):
+    if request.method == 'POST':
+        login = request.POST.get('login')
+        password = request.POST.get('password')
+
+        # Попытка аутентификации
+        user = authenticate(request, username=login, password=password)
+
+        if user is not None:
+            user_login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, "account/login.html", {'error': 'Неверный логин или пароль'})
+
+    return render(request, "account/login.html")
+
+def reg_view(request):
+
+    if request.method == 'POST':
+
+        login = request.POST.get('login')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
+
+        if password2 == password:
+
+            User.objects.create_user(username=login, password=password)
+
+
+            usr = authenticate(request, username=login, password=password)
+
+            if usr is not None:
+                user_login(request, usr)
+                return HttpResponseRedirect('/')
+            else:
+                return render(request, "account/login.html")
+
+
+
+    return render(request, "account/register.html")
+
+def logout_view(request):
+    user_logout(request)
+    return HttpResponseRedirect('/')
+
+
+
+
 

@@ -12,16 +12,18 @@ class Cargo(models.Model):
     company = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     payment = models.CharField(max_length=255)
-    # image = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Customer(models.Model):
-    user_id = models.BigIntegerField(unique=True)
+    id = models.BigIntegerField(primary_key=True)  # Указываем, что это ключ
     customer_name = models.CharField(max_length=255)
     customer_description = models.CharField(max_length=255)
     customer_location = models.CharField(max_length=255)
     customer_location_url = models.CharField(max_length=255, null=True)
     customer_web_site = models.CharField(max_length=255, null=True)
 
-
     def __str__(self):
-        return self.name
+        return self.customer_name
+

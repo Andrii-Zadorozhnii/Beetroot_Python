@@ -14,23 +14,28 @@ html, body {
 }
 
 /* header и footer адаптируются в зависимости от содержимого */
-header, footer {
-  flex-shrink: 0;  /* Не сжимаются */
-  position: absolute;
-  width: 100%;  /* Занимают всю ширину */
-  left: 0;
-  padding: 10px;
-  background-color: #333;
-  color: white;
-  text-align: center;
+footer, header {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(3px);
+        z-index: 1000;
+    }
+
+footer{
+        top: auto;
+        bottom: 0;
 }
 
-header {
-  top: 0;
-}
 
-footer {
-  bottom: 0;
+body {
+    background: linear-gradient(135deg, #205781, #4F959D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 /* Основной контент, который будет располагаться между header и footer */

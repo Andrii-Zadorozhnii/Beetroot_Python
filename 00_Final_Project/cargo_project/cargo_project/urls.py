@@ -16,14 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from cargo import views
 
 urlpatterns = [
 
-    path("admin/", admin.site.urls),
-    path('', views.main_page, name='home'),  # корневой путь
-    path('cargo/', views.cargo_list, name='cargo_list'),  # или другой путь
+    path("admin/", admin.site.urls, name='admin'),
     path('accounts/', include('allauth.urls')),  # Подключаем allauth
-    path('customers/', views.customers, name='customers'),
-    path('products/', views.products, name='products'),
+    path('', include('cargo.urls'))
+
 ]

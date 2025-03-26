@@ -1,4 +1,23 @@
+footer, header {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(3px);
+        z-index: 1000;
+    }
+
 footer{
-    position: absolute;
-    bottom: 0;
+        top: auto;
+        bottom: 0;
+}
+
+
+body {
+    background: linear-gradient(135deg, #205781, #4F959D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }

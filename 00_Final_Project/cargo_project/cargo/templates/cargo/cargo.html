@@ -2,64 +2,55 @@
 {% load static %}
 
 {% block extra_style %}
-    <link rel="stylesheet" href="../../../static/css/cargo/cargo.css">
-{% endblock%}
-
+    <link rel="stylesheet" href={% static "/css/cargo/cargo.css"%}>
+{% endblock %}
 
 {% block content %}
 <div class="content">
-<!-- Левая панель с карточками товаров -->
-<!-- Фильтры для сортировки -->
+    <!-- Левая панель с карточками товаров -->
     <div class="cargo-list">
-        <div class="filters" id="filtration_1">
-            <div class="flex" >
-      <label class="filtration_1" for="origin-select">From:</label>
-      <select id="origin-select" onchange="filterCargos()">
-        <option value="">All Origins</option>
-        {% for origin in origins %}
-          <option value="{{ origin }}">{{ origin }}</option>
-        {% endfor %}
-      </select>
+        <h2 class="section-title">Available Cargos</h2>
+        <div class="filters">
+            <div class="filter-group">
+                <label for="origin-select">From:</label>
+                <select id="origin-select" onchange="filterCargos()">
+                    <option value="">All Origins</option>
+                    {% for origin in origins %}
+                        <option value="{{ origin }}">{{ origin }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <div class="flex">
-      <label class="filtration_1" for="destination-select">To:</label>
-      <select id="destination-select" onchange="filterCargos()">
-        <option value="">All Destinations</option>
-        {% for destination in destinations %}
-          <option value="{{ destination }}">{{ destination }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    </div>
-      {% for cargo in cargos %}
-        <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}" onclick="updateMap('{{ cargo.origin }}', '{{ cargo.destination }}')">
-          <h3>{{ cargo.name }}</h3>
-          <p><strong>From:</strong> {{ cargo.origin }}</p>
-          <p><strong>To:</strong> {{ cargo.destination }}</p>
-
-          <div class="cargo-route-info">
-<!--            <p><strong>Origin:</strong> <span id="origin-info-{{ forloop.counter }}">{{ cargo.origin }}</span></p>-->
-<!--            <p><strong>Destination:</strong> <span id="destination-info-{{ forloop.counter }}">{{ cargo.destination }}</span></p>-->
-            <p><strong>Distance:</strong> <span id="distance-info-{{ forloop.counter }}">{{ cargo.distance }}</span></p>
-            <p><strong>Duration:</strong> <span id="duration-info-{{ forloop.counter }}">{{ cargo.duration }}</span></p>
-          </div>
+            <div class="filter-group">
+                <label for="destination-select">To:</label>
+                <select id="destination-select" onchange="filterCargos()">
+                    <option value="">All Destinations</option>
+                    {% for destination in destinations %}
+                        <option value="{{ destination }}">{{ destination }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-      {% endfor %}
+
+        {% for cargo in cargos %}
+            <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}" onclick="updateMap('{{ cargo.origin }}', '{{ cargo.destination }}')">
+                <h3>{{ cargo.name }}</h3>
+                <p><strong>From:</strong> {{ cargo.origin }}</p>
+                <p><strong>To:</strong> {{ cargo.destination }}</p>
+                <p><strong>Distance:</strong> {{ cargo.distance }} km</p>
+                <p><strong>Duration:</strong> {{ cargo.duration }} hrs</p>
+            </div>
+        {% endfor %}
     </div>
 
-<!-- Правая панель с картой и информацией о маршруте -->
+    <!-- Правая панель с картой -->
     <div class="map-container">
-      <div id="map" class="map-view"></div>
-      <div class="route-info">
-        <h3>Route Data</h3>
-        <p><strong>From:</strong> <span id="route-origin"></span></p>
-        <p><strong>To:</strong> <span id="route-destination"></span></p>
-<!--        <p><strong>Distance:</strong> <span id="route-distance"></span></p>-->
-<!--        <p><strong>Duration:</strong> <span id="route-duration"></span></p>-->
-      </div>
+        <div id="map" class="map-view"></div>
+        <div class="route-info">
+            <h3>Route Data</h3>
+            <p><strong>From:</strong> <span id="route-origin"></span></p>
+            <p><strong>To:</strong> <span id="route-destination"></span></p>
+        </div>
     </div>
-
-
 </div>
 {% endblock %}
 
