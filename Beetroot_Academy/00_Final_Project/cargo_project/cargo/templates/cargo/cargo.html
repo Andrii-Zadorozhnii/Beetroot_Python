@@ -1,0 +1,82 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href={% static "/css/cargo/cargo.css"%}>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <!-- Левая панель с карточками товаров -->
+    <div class="cargo-list">
+        <h2 class="section-title">Available Cargos</h2>
+        <div class="filters">
+            <div class="filter-group">
+                <label for="origin-select">From:</label>
+                <select id="origin-select" onchange="filterCargos()">
+                    <option value="">All Origins</option>
+                    {% for origin in origins %}
+                        <option value="{{ origin }}">{{ origin }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="destination-select">To:</label>
+                <select id="destination-select" onchange="filterCargos()">
+                    <option value="">All Destinations</option>
+                    {% for destination in destinations %}
+                        <option value="{{ destination }}">{{ destination }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        {% for cargo in cargos %}
+            <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}" onclick="updateMap('{{ cargo.origin }}', '{{ cargo.destination }}')">
+                <h3>{{ cargo.name }}</h3>
+                <p><strong>From:</strong> {{ cargo.origin }}</p>
+                <p><strong>To:</strong> {{ cargo.destination }}</p>
+                <p><strong>Distance:</strong> {{ cargo.distance }} km</p>
+                <p><strong>Duration:</strong> {{ cargo.duration }} hrs</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Правая панель с картой -->
+    <div class="map-container">
+        <div id="map" class="map-view"></div>
+        <div class="route-info">
+            <h3>Route Data</h3>
+            <p><strong>From:</strong> <span id="route-origin"></span></p>
+            <p><strong>To:</strong> <span id="route-destination"></span></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src='../../../static/js/cargo/cargo.js'></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfB1EAVuIvBnDjolH6SOtuami3gaLuSNI&callback=initMap&libraries=places,geometry&solution_channel=GMP_QB_commutes_v3_c"
+      async
+      defer
+    ></script>
+
+<script>
+    window.addEventListener('load', adjustLayout);
+window.addEventListener('resize', adjustLayout);
+
+function adjustLayout() {
+  // Получаем высоту header и footer
+  const headerHeight = document.querySelector('header').offsetHeight;
+  const footerHeight = document.querySelector('footer').offsetHeight;
+
+  // Вычисляем доступную высоту для контента
+  const contentHeight = window.innerHeight - headerHeight - footerHeight;
+
+  // Устанавливаем высоту для блоков cargo-list и map-container
+  document.querySelector('.cargo-list').style.height = contentHeight + 'px';
+  document.querySelector('.map-container').style.height = contentHeight + 'px';
+}
+</script>
+{% endblock %}

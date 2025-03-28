@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/auth/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-form">
+    <div class="form-container">
+        <h2>Login</h2>
+        <form method="POST">
+            <div class="input-block">
+                <label for="login">Account</label>
+                <input id="login" type="text" name="login"  required>
+            </div>
+            <div class="input-block">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" required>
+            </div>
+
+            <div class="input-block">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password2" required>
+            </div>
+
+            {% csrf_token %}
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+{% endblock %}

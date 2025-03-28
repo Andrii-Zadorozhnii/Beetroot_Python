@@ -1,0 +1,14 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!--___STYLES___-->
+{% block extra_style %}
+{% endblock%}
+
+<!--___MAIN CONTENT___-->
+{% block content %}
+{% endblock%}
+
+<!--___JAVA SCRIPT___-->
+{% block extra_scripts %}
+{% endblock %}
