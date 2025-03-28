@@ -1,0 +1,28 @@
+
+
+    /* Стили для контейнера с видео */
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 100vh; /* На всю высоту экрана */
+        overflow: hidden;
+    }
+
+    .video-container video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 100%;
+        object-fit: cover;
+        transform: translate(-50%, -50%);
+        z-index: -1; /* Видео на заднем плане */
+    }
+
+    /* Стили для основного контента */
+    .content {
+        position: absolute;
+        top: 10rem;
+        left: 1rem;
+        color: white;
+    }

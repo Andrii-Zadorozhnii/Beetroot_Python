@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Customer Companies{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href={% static "css/customers/customers.css" %}>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Customer Companies</h2>
+    <div class="row" style="overflow: scroll">
+        {% for company in companies %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{{ company.customer_logo_url }}" class="card-img-top" alt="{{ company.customer_name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ company.customer_name }}</h5>
+                    <p class="card-text">{{ company.customer_description }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ company.customer_location }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+/* Общие стили */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: url('https://i.ytimg.com/vi/CC0ywOEAsIE/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBt92ShfAYDimBU99-zk5wMCuuX3A') center/cover no-repeat;
+    color: white;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(3px);
+    z-index: -1;
+}
+
+/* Навигация */
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Герой-секция */
+.hero {
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+    color: black;
+    padding: 120px 20px;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.hero h1 {
+    color: black;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero p {
+    color: black;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.hero .btn {
+    font-size: 1.2rem;
+    padding: 10px 25px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.hero .btn:hover {
+    transform: scale(1.1);
+}
+
+/* Карточки направлений */
+.card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border-radius: 15px;
+    min-height: 25rem;
+    background-color: black;
+    color: white;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Футер */
+footer {
+    background: #333;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .hero .btn {
+        font-size: 1rem;
+    }
+}

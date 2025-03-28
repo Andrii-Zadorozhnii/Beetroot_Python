@@ -1,0 +1,139 @@
+/* Убедитесь, что html и body занимают 100% высоты */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Контейнер для всего содержимого */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden; /* Чтобы избежать скроллинга на странице */
+}
+
+/* header и footer адаптируются в зависимости от содержимого */
+footer, header {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(3px);
+        z-index: 1000;
+    }
+
+footer{
+        top: auto;
+        bottom: 0;
+}
+
+
+body {
+    background: linear-gradient(135deg, #205781, #4F959D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Основной контент, который будет располагаться между header и footer */
+.content {
+  display: flex;
+  flex: 1;  /* Занимает всё оставшееся пространство между header и footer */
+  overflow: auto;  /* Скроллинг, если контент не помещается */
+  flex-direction: row; /* Размещение элементов по горизонтали */
+  margin-top: 50px; /* Отступ сверху для header */
+  margin-bottom: 50px; /* Отступ снизу для footer */
+  padding: 10px;
+}
+
+/* Блоки cargo-list и map-container */
+.cargo-list, .map-container {
+  overflow: auto;  /* Если контент не помещается, добавляется скроллинг */
+  height: 100%; /* Чтобы они всегда оставались внутри */
+}
+
+/* Контейнер для фильтров */
+.cargo-list {
+  width: 25rem;
+  background: #f8f9fa;
+  padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Карточка с товарами */
+.cargo-card {
+  background: #fff;
+  border-radius: .5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cargo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cargo-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.cargo-card p {
+  margin: .3rem 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Карта */
+.map-container {
+  position: relative;
+  flex: 1;
+
+}
+
+.map-view {
+  height: 100%;
+  width: 100%;
+}
+
+/* Информация о маршруте */
+.route-info {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.route-info h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.route-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Фильтры */
+.filtration_1 {
+  display: block;
+}
+
+.flex {
+  max-width: 200px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
