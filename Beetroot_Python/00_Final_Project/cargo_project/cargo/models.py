@@ -5,16 +5,17 @@ class Cargo(models.Model):
     name = models.CharField(max_length=255)
     origin = models.CharField(max_length=255)
     destination = models.CharField(max_length=255)
-    distance = models.CharField(max_length=255, null=True, blank=True)  # Для хранения расстояния
-    duration = models.CharField(max_length=255, null=True, blank=True)  # Для хранения времени в пути
+    distance = models.CharField(max_length=255, null=True, blank=True)
+    duration = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=500, null=True, blank=True)
-    shipment_id = models.CharField(max_length=9999, null=True, blank=True, unique=True)
+    shipment_id = models.CharField(max_length=50, unique=True)  # Уменьшил максимальную длину
     company = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    payment = models.CharField(max_length=255)
+    payment = models.DecimalField(max_digits=10, decimal_places=2)  # Изменил на DecimalField для хранения суммы
+    user_id = models.CharField(max_length=255)  # Добавил поле для связи с пользователем
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.origin} → {self.destination})"
 
 class Customer(models.Model):
     id = models.BigIntegerField(primary_key=True)  # Указываем, что это ключ
