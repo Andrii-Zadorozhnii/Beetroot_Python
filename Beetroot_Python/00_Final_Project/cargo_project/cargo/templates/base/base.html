@@ -33,9 +33,7 @@
 <!--        </a>-->
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><a href="{%url 'home'%}" class="nav-link px-2 link-white button">Main Page</a></li>
-            {% if user.is_authenticated %}
                 <li><a href="{%url 'cargo_list'%}" class="nav-link px-2 link-white button">Cargo</a></li>
-            {% endif %}
           <li><a href="{% url 'customers' %}" class="nav-link px-2 link-white button">Customers</a></li>
           <li><a href="{% url 'products' %}" class="nav-link px-2 link-white button">Products</a></li>
         </ul>

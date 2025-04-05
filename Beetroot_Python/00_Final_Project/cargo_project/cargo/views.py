@@ -1,6 +1,8 @@
 from http.client import HTTPResponse
 from tkinter.font import names
 
+from django.contrib.auth.decorators import login_required
+
 
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.contrib.auth.models import User
@@ -9,8 +11,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import Cargo
-from .models import Customer
+from .models import Customer, Company, Manager, Cargo, User
+
+from .forms import RegisterForm
 
 from cargo_project.service import get_route_info
 
@@ -27,6 +30,7 @@ def base(request):
     ]
     return render(request, "base.html", {"nav": nav})
 
+@login_required
 def cargo_list(request):
     cargos = Cargo.objects.all()
 
@@ -57,45 +61,63 @@ def customers(request):
 def products(request):
     return render(request, 'products/products.html')
 
-
 def login_view(request):
+
     if request.method == 'POST':
+
         login = request.POST.get('login')
         password = request.POST.get('password')
 
-        # Попытка аутентификации
-        user = authenticate(request, username=login, password=password)
+        usr = authenticate(request, username=login, password=password)
 
-        if user is not None:
-            user_login(request, user)
+        if usr is not None:
+            user_login(request, usr)
             return HttpResponseRedirect('/')
         else:
             return render(request, "account/login.html", {'error': 'Неверный логин или пароль'})
 
     return render(request, "account/login.html")
 
+
+
 def reg_view(request):
-
     if request.method == 'POST':
-
+        role = request.POST.get('role')
         login = request.POST.get('login')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
+        phone = request.POST.get('phone')
+        company_name = request.POST.get('company')
 
-        if password2 == password:
 
-            User.objects.create_user(username=login, password=password)
+        if password == password2:
+            usr = User.objects.create_user(
+            role=role,
+            username = login,
+            email = email,
+            first_name = first_name,
+            last_name = last_name,
+            password = password,
+            )
 
+            company = Company.objects.create(
+                company_name = company_name,
+            )
+
+            if role == 'manager':
+                manager = Manager.objects.create(
+                    manager_phone=phone
+                )
 
             usr = authenticate(request, username=login, password=password)
-
             if usr is not None:
                 user_login(request, usr)
                 return HttpResponseRedirect('/')
             else:
-                return render(request, "account/login.html")
-
-
+                return render(request, "account/register.html", {'error': 'Неверный логин или пароль'})
 
     return render(request, "account/register.html")
 
