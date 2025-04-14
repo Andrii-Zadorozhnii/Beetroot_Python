@@ -51,12 +51,12 @@
             <div id="manager-fields" style="display: none;">
                 <div class="input-block">
                     <label for="phone">Phone</label>
-                    <input id="phone" type="text" name="phone" required pattern="^\+?[0-9]{10,15}$" title="Enter a valid phone number">
+                    <input id="phone" type="text" name="phone" pattern="^\+?[0-9]{10,15}$" title="Enter a valid phone number">
                     <div id="phone-error" style="color: red; display: none;">Phone number is invalid.</div>
                 </div>
                 <div class="input-block">
                     <label for="company">Company Name</label>
-                    <input id="company" type="text" name="company" required>
+                    <input id="company" type="text" name="company">
                 </div>
             </div>
 
@@ -84,8 +84,12 @@
         function toggleManagerFields() {
             if (roleSelect.value === 'manager') {
                 managerFields.style.display = 'block';
+                phoneField.setAttribute('required', 'required');
+                phoneField.setAttribute('pattern', '^\+?[0-9]{10,15}$');
             } else {
                 managerFields.style.display = 'none';
+                phoneField.removeAttribute('required');
+                phoneField.removeAttribute('pattern');
             }
         }
 
@@ -128,9 +132,9 @@
             let isValid = true;
 
             // Проверяем все поля перед отправкой формы
-            isValid &= validatePasswords();
-            isValid &= validatePhone();
-            isValid &= validateRole();
+            isValid = isValid && validatePasswords();
+            isValid = isValid && validatePhone();
+            isValid = isValid && validateRole();
 
             if (!isValid) {
                 event.preventDefault(); // Останавливаем отправку формы, если есть ошибки

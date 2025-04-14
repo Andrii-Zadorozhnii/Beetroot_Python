@@ -1,0 +1,52 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/auth/register.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Добавить груз</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="name">Название Груза:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="origin">Откуда:</label><br>
+        <input type="text" id="origin" name="origin" required><br><br>
+
+        <label for="destination">Куда:</label><br>
+        <input type="text" id="destination" name="destination" required><br><br>
+
+<!--        <label for="distance">Расстояние:</label><br>-->
+<!--        <input type="text" id="distance" name="distance"><br><br>-->
+
+<!--        <label for="duration">Длительность:</label><br>-->
+<!--        <input type="text" id="duration" name="duration"><br><br>-->
+
+        <label for="description">Описание:</label><br>
+        <textarea id="description" name="description" maxlength="500"></textarea><br><br>
+
+<!--        <label for="shipment_id">ID Перевозки:</label><br>-->
+<!--        <input type="text" id="shipment_id" name="shipment_id" required><br><br>-->
+
+<!--        <label for="company">Компания (ID):</label><br>-->
+<!--        <input type="number" id="company" name="company"><br><br>-->
+
+<!--        <label for="phone">Телефон:</label><br>-->
+<!--        <input type="text" id="phone" name="phone"><br><br>-->
+
+        <label for="payment">Оплата:</label><br>
+        <input type="number" step="0.01" id="payment" name="payment" required><br><br>
+
+<!--        <label for="user">Пользователь (ID):</label><br>-->
+<!--        <input type="number" id="user" name="user" required><br><br>-->
+
+        <input type="submit" value="Сохранить">
+    </form>
+{% endblock %}
+
+
+{% block extra_scripts %}
+{% endblock %}

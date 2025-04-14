@@ -1,0 +1,34 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_style %}
+<link rel="stylesheet" href={% static "css/cargo/fuel_calculator.css" %}>
+{% endblock %}
+
+
+{% block content %}
+<div class="fuel-calculator">
+    <h2 class="fuel-calculator__title">Калькулятор расхода топлива</h2>
+    <div class="fuel-calculator__form-group">
+        <div class="box">
+            <label for="distance" class="fuel-calculator__label">Расстояние (км):</label>
+            <input type="number" id="distance" name="distance" class="fuel-calculator__input" required>
+        </div>
+        <div class="box">
+            <label for="consumption" class="fuel-calculator__label">Расход топлива (л/100 км):</label>
+            <input type="number" id="consumption" name="consumption" class="fuel-calculator__input" required>
+        </div>
+        <div class="box">
+            <label for="price" class="fuel-calculator__label">Цена топлива (у.е. за литр):</label>
+            <input type="number" id="price" name="price" class="fuel-calculator__input" required>
+        </div>
+        <button id="calculate-button" class="fuel-calculator__button">Рассчитать</button>
+
+        <p id="result" class="fuel-calculator__result"></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/cargo/fuel_calculator.js' %}"></script>
+{% endblock %}

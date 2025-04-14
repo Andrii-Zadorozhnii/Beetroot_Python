@@ -2,6 +2,7 @@ from django.db import models, migrations
 import uuid
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 class User(AbstractUser):
     username = models.CharField(max_length=255)
@@ -12,6 +13,11 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     pass
+
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Cargo(models.Model):
     name = models.CharField(max_length=255)
@@ -24,12 +30,29 @@ class Cargo(models.Model):
     company = models.ForeignKey('Company', on_delete=models.SET_NULL, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     payment = models.DecimalField(max_digits=10, decimal_places=2)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} ({self.origin} → {self.destination})"
 
+    def save(self, *args, **kwargs) -> None:
+        # Если у груза не указана компания или телефон, пробуем получить их из менеджера
+        if not self.company or not self.phone:
+            try:
+                manager = Manager.objects.get(user=self.user)
+                if not self.company:
+                    self.company = manager.company
+                if not self.phone:
+                    self.phone = manager.manager_phone
+            except Manager.DoesNotExist:
+                pass  # Пользователь не является менеджером, пропускаем
 
+        # Автоматическая генерация shipment_id, если он не указан
+        if not self.shipment_id:
+            import uuid
+            self.shipment_id = str(uuid.uuid4())[:12]
+
+        super().save(*args, **kwargs)
 
 class Role(models.Model):
     role = models.CharField(max_length=255)
@@ -46,6 +69,7 @@ class Company(models.Model):
 
 
 class Manager(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     manager_phone = models.CharField(max_length=255)
     company = models.ForeignKey('Company', on_delete=models.SET_NULL, null=True, blank=True)
 
