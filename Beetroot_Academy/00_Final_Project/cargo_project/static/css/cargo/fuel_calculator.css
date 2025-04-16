@@ -1,0 +1,40 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 600px) {
+  .box {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.fuel-calculator {
+  max-width: 50rem;
+  margin: auto;
+  text-align: center;
+  padding: 1rem;
+}
+.fuel-calculator__title {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+.fuel-calculator__label {
+  font-size: 1.2rem;
+}
+@media (max-width: 600px) {
+  .fuel-calculator .fuel-calculator__input {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .fuel-calculator .fuel-calculator__button {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}
+
+/*# sourceMappingURL=fuel_calculator.css.map */

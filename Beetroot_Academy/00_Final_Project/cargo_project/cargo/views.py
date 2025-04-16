@@ -1,32 +1,114 @@
-from http.client import HTTPResponse
-from tkinter.font import names
+import uuid
+
+
+from django.contrib.auth.decorators import login_required
 
 
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.contrib.auth.models import User
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import render, redirect
 
-from .models import Cargo
-from .models import Customer
+from .models import Customer, Company, Manager, Cargo, User
+
+# from .forms import RegisterForm
 
 from cargo_project.service import get_route_info
 
 
+
+# def base(request):
+#     nav = [
+#         {"header": "Main Page", "url": reverse("home")},
+#         {"header": "Cargo", "url": reverse("cargo_list")},
+#         {"header": "Customers", "url": reverse("customers")},
+#         {"header": "Products", "url": reverse("products")},
+#     ]
+#     return render(request, "base.html", {"nav": nav})
+
+# def customers(request):
+#     companies = Customer.objects.all()
+#
+#     return render(request, 'customers/customers.html', {"companies": companies})
+
+#   MAIN PAGE
 def main_page(request):
     return render(request,'home/index.html')
 
-def base(request):
-    nav = [
-        {"header": "Main Page", "url": reverse("home")},
-        {"header": "Cargo", "url": reverse("cargo_list")},
-        {"header": "Customers", "url": reverse("customers")},
-        {"header": "Products", "url": reverse("products")},
-    ]
-    return render(request, "base.html", {"nav": nav})
+#   REGISTRATION /// LOGIN /// LOGOUT
+def reg_view(request):
+    if request.method == 'POST':
+        role = request.POST.get('role')
+        login = request.POST.get('login')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
 
+
+        if password == password2:
+            usr = User.objects.create_user(
+            role=role,
+            username = login,
+            email = email,
+            first_name = first_name,
+            last_name = last_name,
+            password = password,
+            )
+
+
+
+
+
+            if role == 'manager':
+                if request.method == 'POST':
+                    company_name = request.POST.get('company')
+                    phone = request.POST.get('phone')
+
+                    company = Company.objects.create(
+                        company_name=company_name,
+                    )
+
+                    manager = Manager.objects.create(
+                        user=usr,
+                        manager_phone=phone,
+                        company=company
+                    )
+
+            usr = authenticate(request, username=login, password=password)
+            if usr is not None:
+                user_login(request, usr)
+                return HttpResponseRedirect('/')
+            else:
+                return render(request, "account/register.html", {'error': 'Неверный логин или пароль'})
+
+    return render(request, "account/register.html")
+
+def login_view(request):
+
+    if request.method == 'POST':
+
+        login = request.POST.get('login')
+        password = request.POST.get('password')
+
+        usr = authenticate(request, username=login, password=password)
+
+        if usr is not None:
+            user_login(request, usr)
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, "account/login.html", {'error': 'Неверный логин или пароль'})
+
+    return render(request, "account/login.html")
+
+def logout_view(request):
+    user_logout(request)
+    return HttpResponseRedirect('/')
+
+#   CARGO LIST /// ADD CARGO
+@login_required
 def cargo_list(request):
     cargos = Cargo.objects.all()
 
@@ -49,60 +131,51 @@ def cargo_list(request):
         'destinations': destinations,
     }, )
 
-def customers(request):
-    companies = Customer.objects.all()
-
-    return render(request, 'customers/customers.html', {"companies": companies})
-
-def products(request):
-    return render(request, 'products/products.html')
-
-
-def login_view(request):
+@login_required
+def add_cargo(request):
     if request.method == 'POST':
-        login = request.POST.get('login')
-        password = request.POST.get('password')
+        name = request.POST.get('name')
+        origin = request.POST.get('origin')
+        destination = request.POST.get('destination')
+        description = request.POST.get('description')
+        payment = request.POST.get('payment')
 
-        # Попытка аутентификации
-        user = authenticate(request, username=login, password=password)
+        # Попробуем получить дополнительные данные
+        try:
+            manager = Manager.objects.get(user=request.user)
+            company = manager.company
+            phone = manager.manager_phone
+        except Manager.DoesNotExist:
+            company = None
+            phone = None
 
-        if user is not None:
-            user_login(request, user)
-            return HttpResponseRedirect('/')
-        else:
-            return render(request, "account/login.html", {'error': 'Неверный логин или пароль'})
+        # Получение информации о маршруте
+        route_info = get_route_info(origin, destination)
+        distance = route_info.get('distance') if route_info else None
+        duration = route_info.get('duration') if route_info else None
 
-    return render(request, "account/login.html")
+        # Создаём новый груз
+        cargo = Cargo.objects.create(
+            name=name,
+            origin=origin,
+            destination=destination,
+            description=description,
+            distance=distance,
+            duration=duration,
+            shipment_id=str(uuid.uuid4())[:12],
+            company=company,
+            phone=phone,
+            payment=payment,
+            user=request.user
+        )
 
-def reg_view(request):
+        return redirect('cargo_list')  # Или другая нужная страница
 
-    if request.method == 'POST':
+    return render(request, 'cargo/add_cargo.html')
 
-        login = request.POST.get('login')
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
-
-        if password2 == password:
-
-            User.objects.create_user(username=login, password=password)
-
-
-            usr = authenticate(request, username=login, password=password)
-
-            if usr is not None:
-                user_login(request, usr)
-                return HttpResponseRedirect('/')
-            else:
-                return render(request, "account/login.html")
-
-
-
-    return render(request, "account/register.html")
-
-def logout_view(request):
-    user_logout(request)
-    return HttpResponseRedirect('/')
-
+#   FUEL COUNTER
+def fuel_counter(request):
+    return render(request, 'fuel_counter/fuel_counter.html')
 
 
 

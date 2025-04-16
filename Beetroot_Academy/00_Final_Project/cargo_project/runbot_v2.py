@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 TOKEN = BOT_TOKEN
 DB_CONFIG = {
     "user": "postgres",
-    "password": "postgres",
+    "password": "0711",
     "database": "cargo_db",
     "host": "localhost"
 }
@@ -79,7 +79,7 @@ def hash_data(data: str) -> str:
 
 def generate_unique_id(data: dict) -> str:
     raw_data = f"{data['name']}{data['origin']}{data['destination']}{data['company']}{data['phone']}{data['payment']}"
-    return hash_data(raw_data)[:10]
+    return hash_data(raw_data)[:20]
 
 
 async def get_cargo_by_id(shipment_id: str, user_id: int) -> dict:
@@ -132,7 +132,7 @@ async def save_to_db(user_id: int):
             """,
             data["shipment_id"], data["name"], data["origin"],
             data["destination"], data["company"], data["phone"],
-            data["payment"], data["description"],
+            float(data["payment"]), data["description"],
             hash_data(str(user_id)))
 
         # Отправка сообщения водителям
@@ -357,9 +357,9 @@ async def handle_add_cargo(message: Message):
             await message.answer("Введите корректный телефон")
     elif "payment" not in data:
         try:
-            amount = float(text)
-            if amount > 0:
-                data["payment"] = amount
+            payment = float(text)
+            if payment > 0:
+                data["payment"] = payment
                 await message.answer("Введите комментарий:")
             else:
                 await message.answer("Сумма должна быть > 0")
@@ -369,6 +369,7 @@ async def handle_add_cargo(message: Message):
         if len(text) <= 500:
             data["description"] = text
             data["shipment_id"] = generate_unique_id(data)
+            data["user_id"] = hash_data(str(user_id))
             try:
                 await save_to_db(user_id)
                 await message.answer(

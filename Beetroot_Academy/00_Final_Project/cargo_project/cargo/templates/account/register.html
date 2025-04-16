@@ -2,17 +2,39 @@
 {% load static %}
 
 {% block extra_style %}
-<link rel="stylesheet" type="text/css" href="{% static '/css/auth/login.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static '/css/auth/register.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="login-form">
     <div class="form-container">
-        <h2>Login</h2>
-        <form method="POST">
+        <h2>Sign Up</h2>
+        <form id="signup-form" method="POST">
             <div class="input-block">
-                <label for="login">Account</label>
-                <input id="login" type="text" name="login"  required>
+                <label for="role">Role</label>
+                <select id="role" name="role" class="selector" required>
+                    <option value="" disabled {% if not user_role %}selected{% endif %}>Select Role</option>
+                    <option value="driver" {% if user_role == 'driver' %} selected {% endif %}>Driver</option>
+                    <option value="manager" {% if user_role == 'manager' %} selected {% endif %}>Manager</option>
+                </select>
+                <div id="role-error" style="color: red; display: none;">Please select a role.</div>
+            </div>
+
+            <div class="input-block">
+                <label for="login">Login</label>
+                <input id="login" type="text" name="login" required>
+            </div>
+            <div class="input-block">
+                <label for="login">Email</label>
+                <input id="email" type="text" name="email" required>
+            </div>
+            <div class="input-block">
+                <label for="login">First name</label>
+                <input id="first_name" type="text" name="first_name" required>
+            </div>
+            <div class="input-block">
+                <label for="login">Last name</label>
+                <input id="last_name" type="text" name="last_name" required>
             </div>
             <div class="input-block">
                 <label for="password">Password</label>
@@ -20,8 +42,22 @@
             </div>
 
             <div class="input-block">
-                <label for="password">Password</label>
-                <input id="password" type="password" name="password2" required>
+                <label for="password2">Confirm Password</label>
+                <input id="password2" type="password" name="password2" required>
+                <div id="password-error" style="color: red; display: none;">Passwords do not match.</div>
+            </div>
+
+            <!-- Additional fields for manager role -->
+            <div id="manager-fields" style="display: none;">
+                <div class="input-block">
+                    <label for="phone">Phone</label>
+                    <input id="phone" type="text" name="phone" pattern="^\+?[0-9]{10,15}$" title="Enter a valid phone number">
+                    <div id="phone-error" style="color: red; display: none;">Phone number is invalid.</div>
+                </div>
+                <div class="input-block">
+                    <label for="company">Company Name</label>
+                    <input id="company" type="text" name="company">
+                </div>
             </div>
 
             {% csrf_token %}
@@ -31,6 +67,91 @@
 </div>
 {% endblock %}
 
-
 {% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('signup-form');
+        const roleSelect = document.getElementById('role');
+        const managerFields = document.getElementById('manager-fields');
+        const passwordField = document.getElementById('password');
+        const passwordConfirmField = document.getElementById('password2');
+        const phoneField = document.getElementById('phone');
+        const roleError = document.getElementById('role-error');
+        const passwordError = document.getElementById('password-error');
+        const phoneError = document.getElementById('phone-error');
+
+        // Функция для отображения/скрытия полей для менеджера
+        function toggleManagerFields() {
+            if (roleSelect.value === 'manager') {
+                managerFields.style.display = 'block';
+                phoneField.setAttribute('required', 'required');
+                phoneField.setAttribute('pattern', '^\+?[0-9]{10,15}$');
+            } else {
+                managerFields.style.display = 'none';
+                phoneField.removeAttribute('required');
+                phoneField.removeAttribute('pattern');
+            }
+        }
+
+        // Проверка на совпадение паролей
+        function validatePasswords() {
+            if (passwordField.value !== passwordConfirmField.value) {
+                passwordError.style.display = 'block';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                return true;
+            }
+        }
+
+        // Проверка номера телефона
+        function validatePhone() {
+            const phonePattern = /^\+?[0-9]{10,15}$/;
+            if (!phonePattern.test(phoneField.value)) {
+                phoneError.style.display = 'block';
+                return false;
+            } else {
+                phoneError.style.display = 'none';
+                return true;
+            }
+        }
+
+        // Проверка выбранной роли
+        function validateRole() {
+            if (roleSelect.value === '') {
+                roleError.style.display = 'block';
+                return false;
+            } else {
+                roleError.style.display = 'none';
+                return true;
+            }
+        }
+
+        // Подключаем обработчики событий
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Проверяем все поля перед отправкой формы
+            isValid = isValid && validatePasswords();
+            isValid = isValid && validatePhone();
+            isValid = isValid && validateRole();
+
+            if (!isValid) {
+                event.preventDefault(); // Останавливаем отправку формы, если есть ошибки
+            }
+        });
+
+        // Начальная проверка
+        toggleManagerFields();
+
+        // Обработчик изменения роли
+        roleSelect.addEventListener('change', toggleManagerFields);
+
+        // Обработчик изменения пароля
+        passwordConfirmField.addEventListener('input', validatePasswords);
+
+        // Обработчик номера телефона
+        phoneField.addEventListener('input', validatePhone);
+    });
+</script>
 {% endblock %}
