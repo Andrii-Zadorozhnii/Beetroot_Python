@@ -1,0 +1,150 @@
+/* Подключение шрифтов */
+footer, header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+}
+
+footer{
+    top: auto;
+    bottom: 0;
+}
+
+body {
+    background: linear-gradient(135deg, #205781, #4F959D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif; /* Подключенный шрифт */
+}
+
+/* Анимация появления формы */
+.login-form {
+    max-width: 400px;
+    width: 100%;
+    background: #F6F8D5;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeIn 1s ease-in-out forwards;
+    max-height: 80vh;
+    overflow: scroll;
+
+}
+
+/* Анимация для формы */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    color: #205781;
+}
+
+/* Блоки ввода */
+.input-block {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Анимация для меток */
+.input-block label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #205781;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Поля ввода с эффектами */
+.input-block input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #98D2C0;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Анимация фокуса */
+.input-block input:focus {
+    border-color: #4F959D;
+    transform: scale(1.05);
+}
+
+/* Эффект hover для полей ввода */
+.input-block input:hover {
+    border-color: #4F959D;
+}
+
+/* Кнопка с анимацией */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4F959D;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Эффект нажатия кнопки */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Анимация градиента кнопки */
+button:hover {
+    background: linear-gradient(135deg, #205781, #4F959D);
+}
+
+/* Волновой эффект кнопки */
+button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.4s ease-in-out, height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+button:hover::before {
+    width: 0;
+    height: 0;
+    opacity: 1;
+}
+
+.selector {
+    width: 100%;
+    padding: .5rem;
+    border-radius: .5rem;
+    background-color: lightgreen;
+    color: darkblue;
+}

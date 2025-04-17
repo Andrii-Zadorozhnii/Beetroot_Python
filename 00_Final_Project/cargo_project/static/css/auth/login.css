@@ -1,19 +1,18 @@
 /* Подключение шрифтов */
 footer, header {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(3px);
-        z-index: 1000;
-    }
-
-footer{
-        top: auto;
-        bottom: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
 }
 
+footer{
+    top: auto;
+    bottom: 0;
+}
 
 body {
     background: linear-gradient(135deg, #205781, #4F959D);
@@ -21,6 +20,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    font-family: 'Roboto', sans-serif; /* Подключенный шрифт */
 }
 
 /* Анимация появления формы */
@@ -136,4 +136,12 @@ button:hover::before {
     width: 0;
     height: 0;
     opacity: 1;
+}
+
+.selector {
+    width: 100%;
+    padding: .5rem;
+    border-radius: .5rem;
+    background-color: lightgreen;
+    color: darkblue;
 }

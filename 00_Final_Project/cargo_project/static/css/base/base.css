@@ -46,5 +46,120 @@ a, a:hover {
     display: inline-flex;
 }
 
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-mode .button {
+    background-color: #333333;
+    border-color: #ffffff;
+    color: white;
+}
+
+.dark-mode .button:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: .5rem;
+    background-color: #4F959D;
+    color: white;
+    margin-left: 1rem;
+}
+
+.navbar-toggler {
+    display: none;
+    border: none;
+    background: none;
+    padding: .5rem 1rem;
+    font-size: 1.25rem;
+    color: white;
+}
+
+body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+.dark-mode .button {
+            background-color: #333333;
+            border-color: #ffffff;
+            color: white;
+        }
+
+.dark-mode .button:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+.theme-toggle {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: .5rem;
+            background-color: #4F959D;
+            color: white;
+            margin-left: 1rem;
+        }
 
 
+@media (max-width: 1200px) {
+    .navbar-toggler {
+        display: block;
+    }
+
+}
+
+@media (min-width: 1201px) {
+    .navbar-toggler {
+        display: none !important;
+    }
+
+
+
+    .collapse.navbar-collapse {
+        display: flex !important;
+    }
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    footer {
+        display: none !important;
+    }
+
+    .nav, .dropdown {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                display: flex;
+            }
+
+    .nav li{
+                width: 100%;
+                text-align: center;
+            }
+
+
+    .dropdown.text-end {
+                width: 100%;
+                justify-content: center;
+                display: flex;
+                margin-top: 1rem;
+            }
+
+    .button {
+                margin-top: .5rem;
+                width: 100%;
+            }
+
+
+        }

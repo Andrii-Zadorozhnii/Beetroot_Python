@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cargo_db',  # Название вашей базы данных
         'USER': 'postgres',  # Имя пользователя PostgreSQL
-        'PASSWORD': 'postgres',  # Пароль пользователя
+        'PASSWORD': '0711',  # Пароль пользователя
         'HOST': 'localhost',  # Хост базы данных
         'PORT': '5432',  # Порт PostgreSQL
     }
@@ -104,7 +104,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 1
-
+AUTH_USER_MODEL = 'cargo.User'
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
