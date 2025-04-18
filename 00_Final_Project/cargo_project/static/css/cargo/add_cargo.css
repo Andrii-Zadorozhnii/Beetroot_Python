@@ -1,0 +1,62 @@
+.cargo-form {
+  min-width: 300px;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.cargo-form__title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+.cargo-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.cargo-form__group--submit {
+  margin-top: 2rem;
+  align-items: flex-end;
+}
+.cargo-form__label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+.cargo-form__input, .cargo-form__textarea {
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border 0.3s ease;
+}
+.cargo-form__input:focus, .cargo-form__textarea:focus {
+  border-color: #888;
+  outline: none;
+}
+.cargo-form__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.cargo-form__submit {
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #e0e0e0;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+.cargo-form__submit:hover {
+  background-color: #d0d0d0;
+  transform: scale(1.01);
+}
+
+/*# sourceMappingURL=add_cargo.css.map */

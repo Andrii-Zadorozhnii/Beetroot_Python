@@ -28,43 +28,48 @@
 <!--Header-->
 <header class="p-3 border-bottom navbar-fixed-top">
     <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end main-style">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon">+</span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="{%url 'home'%}" class="nav-link px-2 link-white button">Main Page</a></li>
-                <li><a href="{%url 'cargo_list'%}" class="nav-link px-2 link-white button">Cargo</a></li>
-              <li><a href="{% url 'fuel_counter' %}" class="nav-link px-2 link-white button">Fuel counter</a></li>
-              <li><a href="{% url 'fuel_counter' %}" class="nav-link px-2 link-white button">Products</a></li>
+              <li><a href="{%url 'home'%}" class="nav-link px-2 link-white button">Головна сторінка</a></li>
+                <li><a href="{%url 'cargo_list'%}" class="nav-link px-2 link-white button">Пошук грузу</a></li>
+              <li><a href="{% url 'fuel_counter' %}" class="nav-link px-2 link-white button">Розрахунок палива</a></li>
+              <li><a href="{% url 'fuel_counter' %}" class="nav-link px-2 link-white button">Контакти</a></li>
             </ul>
 
             <div class="dropdown text-end inline-flex ">
                 {% if user.is_authenticated %}
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></li>
                 <!-- Показываем имя пользователя -->
-                    <p>Привет, {{ user.username }}!</p>
-                <!-- Вы можете также добавить кнопку выхода -->
-                    <a href="{% url 'logout' %}" class="nav-link px-2 link-white button">Sign Out</a>
+                    <li class="user_name"><p>Привіт, {{ user.username }}!</p></li>
+                <!-- кнопка выхода -->
+                    <li><a href="{% url 'logout' %}" class="nav-link px-2 link-white button">Вихід</a></li>
                     {% if user.username == "admin" %}
-                        <a href="{% url 'admin:index' %}" class="nav-link px-2 link-white button">Admin Panel</a>
+                        <li><a href="{% url 'admin:index' %}" class="nav-link px-2 link-white button">Адмін панель</a></li>
                     {% endif %}
                     {% if user.role == "manager" %}
-                        <a href="{% url 'add_cargo' %}" class="nav-link px-2 link-white button">Add Cargo</a>
+                        <li><a href="{% url 'add_cargo' %}" class="nav-link px-2 link-white button">Додати груз</a></li>
                     {% endif %}
+                     </ul>
                 {% else %}
                 <!-- Кнопка входа, если пользователь не авторизован -->
-                    <p><a href="{% url 'login' %}" class="px-2 link-white button">Sing In</a> | <a href="{% url 'register' %}" class="px-2 link-white button">Registration</a></p>
+                    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></li>   
+                    <li><a href="{% url 'login' %}" class="nav-link px-2 link-white button">Вхід</a></li>
+                    <li></li><a href="{% url 'register' %}" class="nav-link px-2 link-white buttonpx-2 link-white button">Реєстрація</a></li>
+                    </ul>
                 {% endif %}
-              <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
-              </ul>
-              <button class="theme-toggle" onclick="toggleTheme()">Сменить тему</button>
+<!--              <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">-->
+<!--                <li><a class="dropdown-item button" href="#">New project...</a></li>-->
+<!--                <li><a class="dropdown-item button" href="#">Settings</a></li>-->
+<!--                <li><a class="dropdown-item button" href="#">Profile</a></li>-->
+<!--                <li><hr class="dropdown-divider">|</li>-->
+<!--                <li><a class="dropdown-item button" href="#">Sign out</a></li>-->
+<!--              </ul>-->
+<!--              <button class="theme-toggle button" onclick="toggleTheme()">Сменить тему</button>-->
             </div>
         </div>
       </div>

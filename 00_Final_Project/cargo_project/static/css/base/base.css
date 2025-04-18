@@ -4,37 +4,69 @@
   font-style: normal;
 }
 
+body {
+    background: linear-gradient(135deg, #205781, #4F959D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif; /* Подключенный шрифт */
+}
+
+
 footer, header {
-        left: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(3px);
-        z-index: 1000;
-        color: white;
-    }
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+}
 
 footer{
-        bottom: 0;
+    top: auto;
+    bottom: 0;
 }
 
 a, a:hover {
-        text-decoration: none;
+    text-decoration: none;
+    text-align: center;
+
 }
 
 
 .button{
-        border: 1px solid #4F959D;
-        border-radius: .5rem;
-        color: white;
-        background-color: rgba(0, 0, 0, 0.2);
-        margin-left: .5rem;
-        margin-right: .5rem;
+    border: 1px solid #4F959D;
+    border-radius: .5rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: .5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button:active {
+    transform: scale(0.95);
 }
 
-
 .button:hover{
-        background-color: #4F959D;
+        background: linear-gradient(135deg, #205781, #4F959D);
         color: white;
+}
+
+.button::before {
+    /*content: "";*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.4s ease-in-out, height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
 }
 
 #home_img{
@@ -127,7 +159,10 @@ body.dark-mode {
     }
 }
 
-
+@media (min-width: 768px) {
+    footer {
+        display: none !important;
+    }
 
 
 
@@ -161,5 +196,15 @@ body.dark-mode {
                 width: 100%;
             }
 
+    .main-style{
+    max-width: 100%;
+    }
+}
+}
 
-        }
+.user_name{
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

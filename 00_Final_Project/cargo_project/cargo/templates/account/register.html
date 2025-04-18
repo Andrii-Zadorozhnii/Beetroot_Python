@@ -8,41 +8,41 @@
 {% block content %}
 <div class="login-form">
     <div class="form-container">
-        <h2>Sign Up</h2>
+        <h2>Реєстрація</h2>
         <form action="" id="signup-form" method="POST">
             <div class="input-block">
-                <label for="role">Role</label>
+                <label for="role">Позиція</label>
                 <select id="role" name="role" class="selector" required>
-                    <option value="" disabled {% if not user_role %}selected{% endif %}>Select Role</option>
-                    <option value="driver" {% if user_role == 'driver' %} selected {% endif %}>Driver</option>
-                    <option value="manager" {% if user_role == 'manager' %} selected {% endif %}>Manager</option>
+                    <option value="" disabled {% if not user_role %}selected{% endif %}>виберіть позицію</option>
+                    <option value="driver" {% if user_role == 'driver' %} selected {% endif %}>Водій</option>
+                    <option value="manager" {% if user_role == 'manager' %} selected {% endif %}>Менеджер</option>
                 </select>
-                <div id="role-error" style="color: red; display: none;">Please select a role.</div>
+                <div id="role-error" style="color: red; display: none;">Будь ласка виберіть позицію</div>
             </div>
 
             <div class="input-block">
-                <label for="login">Login</label>
+                <label for="login">Логін</label>
                 <input id="login" type="text" name="login" required>
             </div>
             <div class="input-block">
-                <label for="login">Email</label>
+                <label for="login">Пошта</label>
                 <input id="email" type="text" name="email" required>
             </div>
             <div class="input-block">
-                <label for="login">First name</label>
+                <label for="login">Імя</label>
                 <input id="first_name" type="text" name="first_name" required>
             </div>
             <div class="input-block">
-                <label for="login">Last name</label>
+                <label for="login">Фамілія</label>
                 <input id="last_name" type="text" name="last_name" required>
             </div>
             <div class="input-block">
-                <label for="password">Password</label>
+                <label for="password">Пароль</label>
                 <input id="password" type="password" name="password" required>
             </div>
 
             <div class="input-block">
-                <label for="password2">Confirm Password</label>
+                <label for="password2">Підтвердження паролю</label>
                 <input id="password2" type="password" name="password2" required>
                 <div id="password-error" style="color: red; display: none;">Passwords do not match.</div>
             </div>
@@ -50,18 +50,18 @@
             <!-- Additional fields for manager role -->
             <div id="manager-fields" style="display: none;">
                 <div class="input-block">
-                    <label for="phone">Phone</label>
+                    <label for="phone">Телефон</label>
                     <input id="phone" type="text" name="phone" pattern="^\+?[0-9]{10,15}$" title="Enter a valid phone number">
-                    <div id="phone-error" style="color: red; display: none;">Phone number is invalid.</div>
+                    <div id="phone-error" style="color: red; display: none;">Не корєктний номер телефону</div>
                 </div>
                 <div class="input-block">
-                    <label for="company">Company Name</label>
+                    <label for="company">Назва компанії</label>
                     <input id="company" type="text" name="company">
                 </div>
             </div>
 
             {% csrf_token %}
-            <button type="submit">Sign Up</button>
+            <button type="submit">Реєстрація</button>
         </form>
     </div>
 </div>
@@ -84,10 +84,17 @@
         function toggleManagerFields() {
             if (roleSelect.value === 'manager') {
                 managerFields.style.display = 'block';
+                console.log('manager selected')
                 phoneField.setAttribute('required', 'required');
                 phoneField.setAttribute('pattern', '^\+?[0-9]{10,15}$');
-            } else {
+            }
+            else if (roleSelect.value === 'driver') {
                 managerFields.style.display = 'none';
+                console.log('driver selected')
+            }
+            else {
+                managerFields.style.display = 'none';
+                console.log('none selected')
                 phoneField.removeAttribute('required');
                 phoneField.removeAttribute('pattern');
             }
@@ -130,15 +137,28 @@
         // Подключаем обработчики событий
         form.addEventListener('submit', function(event) {
             let isValid = true;
+            console.log(role)
 
-            // Проверяем все поля перед отправкой формы
-            isValid = isValid && validatePasswords();
-            isValid = isValid && validatePhone();
-            isValid = isValid && validateRole();
+            if (roleSelect.value === 'manager') {
+                    // Проверяем все поля перед отправкой формы
+                    isValid = isValid && validatePasswords();
+                    isValid = isValid && validatePhone();
+                    isValid = isValid && validateRole();
+            if (!isValid) {
+                    event.preventDefault(); // Останавливаем отправку формы, если есть ошибки
+                }
+            }
+            else if (roleSelect.value === 'driver') {
+                // Проверяем все поля перед отправкой формы
+                isValid = isValid && validatePasswords();
+                // isValid = isValid && validatePhone();
+                isValid = isValid && validateRole();
 
             if (!isValid) {
-                event.preventDefault(); // Останавливаем отправку формы, если есть ошибки
+                    event.preventDefault(); // Останавливаем отправку формы, если есть ошибки
+                }
             }
+
         });
 
         // Начальная проверка

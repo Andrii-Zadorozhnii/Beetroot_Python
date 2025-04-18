@@ -8,19 +8,19 @@
 {% block content %}
 <div class="login-form">
     <div class="form-container">
-        <h2>Login</h2>
+        <h2>Вхід</h2>
         <form method="POST">
             <div class="input-block">
-                <label for="login">Account</label>
+                <label for="login">Логін</label>
                 <input id="login" type="text" name="login"  required>
             </div>
             <div class="input-block">
-                <label for="password">Password</label>
+                <label for="password">Пароль</label>
                 <input id="password" type="password" name="password" required>
             </div>
 
             {% csrf_token %}
-            <button type="submit">Sign In</button>
+            <button type="submit">Вхід</button>
         </form>
     </div>
 </div>

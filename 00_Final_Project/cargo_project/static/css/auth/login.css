@@ -27,7 +27,7 @@ body {
 .login-form {
     width: 100%;
     max-width: 400px;
-    background: #F6F8D5;
+    background: white;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -91,52 +91,6 @@ body {
     border-color: #4F959D;
 }
 
-/* Кнопка с анимацией */
-button {
-    width: 100%;
-    padding: 12px;
-    background: #4F959D;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Эффект нажатия кнопки */
-button:active {
-    transform: scale(0.95);
-}
-
-/* Анимация градиента кнопки */
-button:hover {
-    background: linear-gradient(135deg, #205781, #4F959D);
-}
-
-/* Волновой эффект кнопки */
-button::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background: rgba(255, 255, 255, 0.3);
-    transition: width 0.4s ease-in-out, height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-}
-
-button:hover::before {
-    width: 0;
-    height: 0;
-    opacity: 1;
-}
 
 .selector {
     width: 100%;
