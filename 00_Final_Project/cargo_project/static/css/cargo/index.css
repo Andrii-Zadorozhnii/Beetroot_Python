@@ -1,14 +1,14 @@
 
 
     /* Стили для контейнера с видео */
-    .video-container {
+.video-container {
         position: relative;
         width: 100%;
         height: 100vh; /* На всю высоту экрана */
         overflow: hidden;
     }
 
-    .video-container video {
+.video-container video {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -18,11 +18,59 @@
         transform: translate(-50%, -50%);
         z-index: -1; /* Видео на заднем плане */
     }
+.content {
+    display: block;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    background-color: rgba(0, 0, 0, 0.6); /* напівпрозорий чорний фон */
+    border-radius: 1rem;
+    padding: 2rem;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    z-index: 1;
 
-    /* Стили для основного контента */
+}
+
+.content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.5rem;
+}
+
+.content ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.content ul li {
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    font-size: 1.1rem;
+}
+
+.content__header{
+    display: block;
+}
+
+/* Адаптив для мобільних */
+@media (max-width: 600px) {
     .content {
-        position: absolute;
-        top: 10rem;
-        left: 1rem;
-        color: white;
+        padding: 1rem;
     }
+
+    .content h2 {
+        font-size: 1.25rem;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+}

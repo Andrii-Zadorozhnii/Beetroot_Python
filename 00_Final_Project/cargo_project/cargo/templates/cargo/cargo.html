@@ -6,38 +6,47 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="content">
     <!-- Левая панель с карточками товаров -->
     <div class="cargo-list">
-        <h2 class="section-title">Available Cargos</h2>
+        <h2 class="section-title">Пошук Вантаж</h2>
         <div class="filters">
             <div class="filter-group">
-                <label for="origin-select">From:</label>
+                <label for="origin-select">Місце відправлення:</label>
                 <select id="origin-select" onchange="filterCargos()">
-                    <option value="">All Origins</option>
+                    <option value="">З усіх напрямків</option>
                     {% for origin in origins %}
-                        <option value="{{ origin }}">{{ origin }}</option>
+                        <option  value="{{ origin }}">{{ origin }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="filter-group">
-                <label for="destination-select">To:</label>
+                <label for="destination-select">Місце прибуття::</label>
                 <select id="destination-select" onchange="filterCargos()">
-                    <option value="">All Destinations</option>
+                    <option value="">В Усі напрямки</option>
                     {% for destination in destinations %}
-                        <option value="{{ destination }}">{{ destination }}</option>
+                        <option  value="{{ destination }}">{{ destination }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
 
         {% for cargo in cargos %}
-            <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}" onclick="updateMap('{{ cargo.origin }}', '{{ cargo.destination }}')">
+            <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}"
+                 onclick="handleCardClick(this, '{{ cargo.origin }}', '{{ cargo.destination }}')">
                 <h3>{{ cargo.name }}</h3>
-                <p><strong>From:</strong> {{ cargo.origin }}</p>
-                <p><strong>To:</strong> {{ cargo.destination }}</p>
-                <p><strong>Distance:</strong> {{ cargo.distance }} km</p>
-                <p><strong>Duration:</strong> {{ cargo.duration }} hrs</p>
+                <p><strong>Відправлення:</strong> {{ cargo.origin }}</p>
+                <p><strong>Прибуття:</strong> {{ cargo.destination }}</p>
+                <p><strong>Відстань:</strong> {{ cargo.distance }}</p>
+                <p><strong>Тривалість:</strong> {{ cargo.duration }}</p>
+
+                <div class="hide_show">
+                    <p><strong>Компанія:</strong> {{ cargo.company }}</p>
+                    <p><strong>Телефон:</strong> {{ cargo.phone }}</p>
+                    <p><strong>Сплата:</strong> {{ cargo.payment }}usd</p>
+                    <p><strong>Коментар:</strong> {{ cargo.description }}</p>
+                </div>
             </div>
         {% endfor %}
     </div>
@@ -46,9 +55,9 @@
     <div class="map-container">
         <div id="map" class="map-view"></div>
         <div class="route-info">
-            <h3>Route Data</h3>
-            <p><strong>From:</strong> <span id="route-origin"></span></p>
-            <p><strong>To:</strong> <span id="route-destination"></span></p>
+            <h3>Данні шляху</h3>
+            <p><strong>З:</strong> <span id="route-origin"></span></p>
+            <p><strong>До:</strong> <span id="route-destination"></span></p>
         </div>
     </div>
 </div>
@@ -64,19 +73,28 @@
 
 <script>
     window.addEventListener('load', adjustLayout);
-window.addEventListener('resize', adjustLayout);
+    window.addEventListener('resize', adjustLayout);
 
-function adjustLayout() {
-  // Получаем высоту header и footer
-  const headerHeight = document.querySelector('header').offsetHeight;
-  const footerHeight = document.querySelector('footer').offsetHeight;
+    function adjustLayout() {
+        // Получаем высоту header и footer
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const footerHeight = document.querySelector('footer').offsetHeight;
 
-  // Вычисляем доступную высоту для контента
-  const contentHeight = window.innerHeight - headerHeight - footerHeight;
+        // Вычисляем доступную высоту для контента
+        const contentHeight = window.innerHeight - headerHeight - footerHeight;
 
-  // Устанавливаем высоту для блоков cargo-list и map-container
-  document.querySelector('.cargo-list').style.height = contentHeight + 'px';
-  document.querySelector('.map-container').style.height = contentHeight + 'px';
-}
+        // Устанавливаем высоту для блоков cargo-list и map-container
+        document.querySelector('.cargo-list').style.height = contentHeight + 'px';
+        document.querySelector('.map-container').style.height = contentHeight + 'px';
+    }
+    function handleCardClick(cardElement, origin, destination) {
+        // Обновляем карту
+        updateMap(origin, destination);
+
+        // Переключаем видимость блока
+        const detailBlock = cardElement.querySelector('.hide_show');
+        detailBlock.classList.toggle('show');
+    }
+
 </script>
 {% endblock %}

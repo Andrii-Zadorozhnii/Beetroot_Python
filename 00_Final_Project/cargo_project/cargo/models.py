@@ -18,9 +18,9 @@ class User(AbstractUser):
 User = get_user_model()
 
 class Cargo(models.Model):
-    name = models.CharField(max_length=255)
-    origin = models.CharField(max_length=255)
-    destination = models.CharField(max_length=255)
+    name = models.CharField(max_length=255) # назва вантажу
+    origin = models.CharField(max_length=255)  # місце відправлення
+    destination = models.CharField(max_length=255) # місце доставки
     distance = models.CharField(max_length=255, null=True, blank=True)
     duration = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=500, null=True, blank=True)
@@ -29,6 +29,7 @@ class Cargo(models.Model):
     phone = models.CharField(max_length=255, null=True, blank=True)
     payment = models.DecimalField(max_digits=10, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.origin} → {self.destination})"

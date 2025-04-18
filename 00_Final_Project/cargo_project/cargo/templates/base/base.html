@@ -26,7 +26,7 @@
 <body>
 
 <!--Header-->
-<header class="p-3 border-bottom navbar-fixed-top">
+<header class="p-3 border-bottom navbar-fixed-top gradient-animated">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end main-style">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,9 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
               <li><a href="{%url 'home'%}" class="nav-link px-2 link-white button">Головна сторінка</a></li>
-                <li><a href="{%url 'cargo_list'%}" class="nav-link px-2 link-white button">Пошук грузу</a></li>
+                <li><a href="{%url 'cargo_list'%}" class="nav-link px-2 link-white button">Пошук вантажу</a></li>
               <li><a href="{% url 'fuel_counter' %}" class="nav-link px-2 link-white button">Розрахунок палива</a></li>
-              <li><a href="{% url 'fuel_counter' %}" class="nav-link px-2 link-white button">Контакти</a></li>
+              <li><a href="{% url 'about' %}" class="nav-link px-2 link-white button">О нас</a></li>
             </ul>
 
             <div class="dropdown text-end inline-flex ">
@@ -52,7 +52,7 @@
                         <li><a href="{% url 'admin:index' %}" class="nav-link px-2 link-white button">Адмін панель</a></li>
                     {% endif %}
                     {% if user.role == "manager" %}
-                        <li><a href="{% url 'add_cargo' %}" class="nav-link px-2 link-white button">Додати груз</a></li>
+                        <li><a href="{% url 'add_cargo' %}" class="nav-link px-2 link-white button">Додати вантаж</a></li>
                     {% endif %}
                      </ul>
                 {% else %}
@@ -76,11 +76,9 @@
     </div>
   </header>
 
-
 <!-- Main Content -->
 {% block content %}
 {% endblock %}
-
 
 
 <!--Footer-->

@@ -6,42 +6,63 @@
 {% endblock %}
 
 {% block content %}
-
+<div class="content ">
     <form method="post" class="cargo-form">
-    <h1 class="cargo-form__title">Додати вантаж</h1>
-    {% csrf_token %}
+        <div class="cargo-form__group">
+            <h1 class="cargo-form__title">Додати вантаж</h1>
+        </div>
+        {% csrf_token %}
 
-    <div class="cargo-form__group">
-        <label for="name" class="cargo-form__label">Назва вантажу:</label>
-        <input type="text" id="name" name="name" class="cargo-form__input" required>
-    </div>
+        <div class="cargo-form__group">
+            <label for="name" class="cargo-form__label">Назва вантажу:</label>
+            <input type="text" id="name" name="name" class="cargo-form__input" required>
+        </div>
 
-    <div class="cargo-form__group">
-        <label for="origin" class="cargo-form__label">Звідки:</label>
-        <input type="text" id="origin" name="origin" class="cargo-form__input" required>
-    </div>
+        <div class="cargo-form__group">
+            <label for="origin" class="cargo-form__label">Звідки:</label>
+            <input type="text" id="origin" name="origin" class="cargo-form__input" required>
+        </div>
 
-    <div class="cargo-form__group">
-        <label for="destination" class="cargo-form__label">Куди:</label>
-        <input type="text" id="destination" name="destination" class="cargo-form__input" required>
-    </div>
+        <div class="cargo-form__group">
+            <label for="destination" class="cargo-form__label">Куди:</label>
+            <input type="text" id="destination" name="destination" class="cargo-form__input" required>
+        </div>
 
-    <div class="cargo-form__group">
-        <label for="description" class="cargo-form__label">Опис:</label>
-        <textarea id="description" name="description" maxlength="500" class="cargo-form__textarea"></textarea>
-    </div>
+        <div class="cargo-form__group">
+            <label for="description" class="cargo-form__label">Опис:</label>
+            <textarea id="description" name="description" maxlength="500" class="cargo-form__textarea"></textarea>
+        </div>
 
-    <div class="cargo-form__group">
-        <label for="payment" class="cargo-form__label">Оплата:</label>
-        <input type="number" step="0.01" id="payment" name="payment" class="cargo-form__input" required>
-    </div>
+        <div class="cargo-form__group">
+            <label for="payment" class="cargo-form__label">Cплата:</label>
+            <input type="number" step="0.01" id="payment" name="payment" class="cargo-form__input" required>
+        </div>
 
-    <div class="cargo-form__group cargo-form__group--submit">
-        <input type="submit" value="Зберегти" class="cargo-form__submit">
-    </div>
-</form>
+        <div class="cargo-form__group cargo-form__group--submit">
+            <input type="submit" value="Зберегти" class="cargo-form__submit">
+        </div>
+    </form>
+</div>
 {% endblock %}
 
 
 {% block extra_scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfB1EAVuIvBnDjolH6SOtuami3gaLuSNI&libraries=places&language=uk"></script>
+<script>
+    function initAutocomplete() {
+        const originInput = document.getElementById('origin');
+        const destinationInput = document.getElementById('destination');
+
+        const originAutocomplete = new google.maps.places.Autocomplete(originInput, {
+            types: ['(cities)'],
+        });
+
+        const destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {
+            types: ['(cities)'],
+        });
+    }
+
+    // Ініціалізуємо при завантаженні
+    window.addEventListener('load', initAutocomplete);
+</script>
 {% endblock %}

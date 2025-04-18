@@ -1,5 +1,9 @@
 import uuid
 
+from django.db.models import Count
+from django.utils import timezone
+from datetime import datetime, timedelta
+from django.db.models.functions import TruncDate
 
 from django.contrib.auth.decorators import login_required
 
@@ -18,23 +22,38 @@ from cargo_project.service import get_route_info
 import pdb;
 
 
-# def base(request):
-#     nav = [
-#         {"header": "Main Page", "url": reverse("home")},
-#         {"header": "Cargo", "url": reverse("cargo_list")},
-#         {"header": "Customers", "url": reverse("customers")},
-#         {"header": "Products", "url": reverse("products")},
-#     ]
-#     return render(request, "base.html", {"nav": nav})
-
-# def customers(request):
-#     companies = Customer.objects.all()
-#
-#     return render(request, 'customers/customers.html', {"companies": companies})
-
 #   MAIN PAGE
 def main_page(request):
-    return render(request,'home/index.html')
+    today = timezone.now().date()
+    start_week = today - timedelta(days=6)  # включає сьогодні + 6 назад
+
+    # Для графіка за останні 7 днів
+    week_stats = (
+        Cargo.objects
+        .filter(created_at__date__range=(start_week, today))
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    # Словник з днями, навіть якщо немає вантажів
+    last_7_days = [(today - timedelta(days=i)) for i in reversed(range(7))]
+    week_data = {str(d): 0 for d in last_7_days}
+    for item in week_stats:
+        week_data[str(item['day'])] = item['count']
+
+    # Загальна кількість за поточний місяць
+    first_day_of_month = today.replace(day=1)
+    month_count = Cargo.objects.filter(created_at__date__gte=first_day_of_month).count()
+    labels = list(week_data.keys())
+    values = list(week_data.values())
+    return render(request,'home/index.html', {
+    'week_data': week_data,
+    'month_count': month_count,
+    'labels': labels,
+    'values': values,
+})
 
 #   REGISTRATION /// LOGIN /// LOGOUT
 def reg_view(request):
@@ -176,6 +195,11 @@ def add_cargo(request):
 #   FUEL COUNTER
 def fuel_counter(request):
     return render(request, 'fuel_counter/fuel_counter.html')
+
+# ABOUT
+
+def about(request):
+    return render(request, 'about/about.html')
 
 
 

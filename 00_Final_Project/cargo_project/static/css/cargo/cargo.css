@@ -1,53 +1,3 @@
-/* Убедитесь, что html и body занимают 100% высоты */
-/*html, body {*/
-/*  height: 100%;*/
-/*  margin: 0;*/
-/*  padding: 0;*/
-/*}*/
-
-/* Контейнер для всего содержимого */
-.page-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden; /* Чтобы избежать скроллинга на странице */
-}
-
-/* header и footer адаптируются в зависимости от содержимого */
-footer, header {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(3px);
-        z-index: 1000;
-    }
-
-footer{
-        top: auto;
-        bottom: 0;
-}
-
-
-body {
-    background: linear-gradient(135deg, #205781, #4F959D);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-/* Основной контент, который будет располагаться между header и footer */
-.content {
-  display: flex;
-  flex: 1;  /* Занимает всё оставшееся пространство между header и footer */
-  overflow: auto;  /* Скроллинг, если контент не помещается */
-  flex-direction: row; /* Размещение элементов по горизонтали */
-  margin-top: 50px; /* Отступ сверху для header */
-  margin-bottom: 50px; /* Отступ снизу для footer */
-  padding: 10px;
-}
 
 /* Блоки cargo-list и map-container */
 .cargo-list, .map-container {
@@ -58,16 +8,22 @@ body {
 /* Контейнер для фильтров */
 .cargo-list {
   width: 25rem;
-  background: #f8f9fa;
   padding: 1rem;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+
+    display: block;
+    max-width: 800px;
+    background-color: rgba(32, 87, 129, 0.6);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(32, 87, 129, 0.4);
+    backdrop-filter: blur(10px);
+    z-index: 1;
 }
 
 /* Карточка с товарами */
 .cargo-card {
   background: #fff;
   border-radius: .5rem;
-  padding: 1rem;
+  padding: .5rem;
   margin-bottom: 1rem;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -80,8 +36,11 @@ body {
 }
 
 .cargo-card h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
+
+  color: #205781;
+  font-weight: 800;
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
 }
 
 .cargo-card p {
@@ -135,5 +94,12 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 7px;
+}
+
+.filter-group{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 

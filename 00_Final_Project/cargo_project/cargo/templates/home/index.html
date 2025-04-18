@@ -20,10 +20,64 @@
 
 <div class="content">
 
+<!--<h2>Вантажі за останні 7 днів:</h2>-->
+<!--    <ul>-->
+<!--        {% for date, count in week_data.items %}-->
+<!--            <li>{{ date }} — {{ count }} вантажів</li>-->
+<!--        {% endfor %}-->
+<!--    </ul>-->
+
+
+    <h2 class="content__header">📦 Графік вантажів за останні 7 днів</h2>
+    <canvas  id="cargoChart" width="600" height="300"></canvas>
+
+<h2>Всього за поточний місяць: {{ month_count }}</h2>
 </div>
 
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('cargoChart').getContext('2d');
+
+
+    const labels = {{ labels|safe }};
+    const data = {{ values|safe }};
+
+    new Chart(ctx, {
+        type: 'bar',  // можеш замінити на 'line'
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Кількість вантажів',
+                data: data,
+                backgroundColor: 'rgba(79, 149, 157, 0.7)',
+                borderColor: '#205781',
+                borderWidth: 2,
+                borderRadius: 5,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Вантажі за останні 7 днів'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
 <!-- Optional: Add any additional scripts here -->
 {% endblock %}

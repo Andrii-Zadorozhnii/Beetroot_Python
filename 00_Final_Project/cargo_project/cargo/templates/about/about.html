@@ -1,0 +1,99 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'css/about/about.css'%}">
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <section class="about-container">
+        <div class="about-content">
+            <div class="about-text">
+                <h1 class="title">Про наш сервіс</h1>
+                <p class="description">
+                    Ми — онлайн-сервіс для пошуку, замовлення та управління вантажоперевезеннями по всій Україні. <br>Наша платформа з'єднує вантажовідправників і перевізників уже понад <strong>10 років</strong>.
+                </p>
+                <p class="description">
+                    🛠 Ми не виконуємо перевезення самостійно, а надаємо сучасні цифрові інструменти для їх організації.<br>
+                    🔍 Простий пошук маршрутів і перевізників<br>
+                    📦 Зручне управління вантажами в особистому кабінеті<br>
+                    🏆 Надійні партнери та сертифіковані перевізники
+                </p>
+                <p class="description">
+                    Ми працюємо для того, щоб зробити ринок вантажоперевезень прозорим, доступним і зручним — як для бізнесу, так і для приватних осіб.
+                </p>
+
+                <p class="phone">📞 Контактний номер: <a href="tel:+380501234567">+38 (050) 123 45 67</a></p>
+            </div>
+            <div class="map-block">
+                <iframe class="map" src="https://maps.google.com/maps?q=Одеса,Україна&amp;z=14&amp;output=embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- СЕРТИФІКАТИ (СЛАЙДЕР) -->
+    <div class="certificates">
+        <h2 class="subtitle text-center">Наші сертифікати</h2>
+
+        <div id="certCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row gx-2">
+                        <div class="col-6">
+                            <img src="{% static 'img/certificate1.jpg' %}" class="d-block w-100 cert-img" alt="Сертифікат 1" onclick="openCertModal(this)">
+                        </div>
+                        <div class="col-6">
+                            <img src="{% static 'img/certificate2.jpg' %}" class="d-block w-100 cert-img" alt="Сертифікат 2" onclick="openCertModal(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row gx-2">
+                        <div class="col-6">
+                            <img src="{% static 'img/certificate3.jpg' %}" class="d-block w-100 cert-img" alt="Сертифікат 3" onclick="openCertModal(this)">
+                        </div>
+                        <div class="col-6">
+                            <img src="{% static 'img/certificate4.jpg' %}" class="d-block w-100 cert-img" alt="Сертифікат 4" onclick="openCertModal(this)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопки навігації -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#certCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#certCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО -->
+    <div class="modal fade" id="certModal" tabindex="-1" aria-labelledby="certModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content bg-dark">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-4" data-bs-dismiss="modal" aria-label="Закрити"></button>
+                <div class="modal-body d-flex justify-content-center align-items-center p-0">
+                    <img id="modalCertImg" src="" alt="Перегляд сертифіката" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Оголошуємо функцію openCertModal перед використанням
+    function openCertModal(imgElement) {
+        const modal = new bootstrap.Modal(document.getElementById('certModal'));
+        const modalImg = document.getElementById('modalCertImg');
+        modalImg.src = imgElement.src;
+        modal.show();
+    }
+</script>
+{% endblock %}
