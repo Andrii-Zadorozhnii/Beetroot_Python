@@ -17,6 +17,7 @@ class User(AbstractUser):
 
 User = get_user_model()
 
+
 class Cargo(models.Model):
     name = models.CharField(max_length=255) # назва вантажу
     origin = models.CharField(max_length=255)  # місце відправлення
@@ -28,6 +29,9 @@ class Cargo(models.Model):
     company = models.ForeignKey('Company', on_delete=models.SET_NULL, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     payment = models.DecimalField(max_digits=10, decimal_places=2)
+    truck = models.CharField(max_length=100)
+    currency = models.CharField(max_length=3)
+    payment_method = models.CharField(max_length=10)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -10,15 +10,29 @@ class Command(BaseCommand):
     help = 'Створює фейкові вантажі для періоду з 01.02.2025 по сьогодні'
 
     def handle(self, *args, **kwargs):
-        # Встановлюємо дати для періоду з 01.02.2025 по сьогодні
         start_date = datetime(2025, 2, 1).date()
         end_date = timezone.now().date()
 
         cities = [
-            'Київ', 'Харків', 'Одеса', 'Дніпро', 'Львів',
-            'Запоріжжя', 'Кривий Ріг', 'Миколаїв', 'Вінниця',
-            'Херсон', 'Полтава', 'Чернігів', 'Черкаси', 'Житомир',
-            'Суми', 'Івано-Франківськ', 'Тернопіль', 'Ужгород', 'Луцьк'
+            'Київ, Київська область, Україна',
+            'Харків, Харківська область, Україна',
+            'Одеса, Одеська область, Україна',
+            'Дніпро, Дніпропетровська область, Україна',
+            'Львів, Львівська область, Україна',
+            'Запоріжжя, Запорізька область, Україна',
+            'Кривий Ріг, Дніпропетровська область, Україна',
+            'Миколаїв, Миколаївська область, Україна',
+            'Вінниця, Вінницька область, Україна',
+            'Херсон, Херсонська область, Україна',
+            'Полтава, Полтавська область, Україна',
+            'Чернігів, Чернігівська область, Україна',
+            'Черкаси, Черкаська область, Україна',
+            'Житомир, Житомирська область, Україна',
+            'Суми, Сумська область, Україна',
+            'Івано-Франківськ, Івано-Франківська область, Україна',
+            'Тернопіль, Тернопільська область, Україна',
+            'Ужгород, Закарпатська область, Україна',
+            'Луцьк, Волинська область, Україна'
         ]
 
         cargo_names = [
@@ -27,7 +41,21 @@ class Command(BaseCommand):
             'Сільгосптехніка', 'Газоблоки', 'Соя', 'Олія', 'Удобрення'
         ]
 
-        # Вибір користувача та компанії
+        trucks = [
+            'Container_20', 'Container_40', 'Tent', 'Refrigerator', 'Isotherm',
+            'Open Platform', 'Jumbo', 'Mega', 'Cistern', 'Car Carrier',
+            'Livestock', 'Lowboy', 'Tilt Trailer', 'Tipper', 'Flatbed',
+            'Tank', 'Side Curtain', 'Dump Truck'
+        ]
+
+        currencies = ['UAH', 'USD', 'EUR', 'PLN', 'GBP', 'CHF', 'CZK']
+
+        payment_methods = [
+            'card', 'cash', 'bank_transfer', 'payment_on_delivery',
+            'invoice', 'online_wallet', 'crypto', 'terminal',
+            'letter_of_credit', 'western_union', 'barter', 'cheque', 'mobile_payment'
+        ]
+
         try:
             user = User.objects.first()
             company = Company.objects.first()
@@ -39,23 +67,20 @@ class Command(BaseCommand):
         current_date = start_date
 
         while current_date <= end_date:
-            num_rows = random.randint(20, 50)  # Випадкове число вантажів
+            num_rows = random.randint(20, 50)
 
             for _ in range(num_rows):
                 origin = random.choice(cities)
                 destination = random.choice([c for c in cities if c != origin])
                 name = random.choice(cargo_names)
 
-                # Генерація телефону та часу
                 phone = f"+380{random.randint(100000000, 999999999)}"
 
-                # Генерація випадкової дати та часу для кожного вантажу
                 created_at = datetime.combine(current_date, datetime.min.time()) + timedelta(
                     hours=random.randint(0, 23),
                     minutes=random.randint(0, 59)
                 )
 
-                # Створення вантажу
                 Cargo.objects.create(
                     name=name,
                     origin=origin,
@@ -67,6 +92,9 @@ class Command(BaseCommand):
                     company=company,
                     phone=phone,
                     payment=round(random.uniform(300, 1000), 2),
+                    truck=random.choice(trucks),
+                    currency=random.choice(currencies),
+                    payment_method=random.choice(payment_methods),
                     user=user,
                     created_at=created_at
                 )
@@ -74,4 +102,6 @@ class Command(BaseCommand):
 
             current_date += timedelta(days=1)
 
-        self.stdout.write(self.style.SUCCESS(f"Успішно додано {total_inserted} вантажів для періоду з 01.02.2025 по сьогодні!"))
+        self.stdout.write(self.style.SUCCESS(
+            f"Успішно додано {total_inserted} вантажів для періоду з 01.02.2025 по {end_date.strftime('%d.%m.%Y')}!"
+        ))

@@ -158,6 +158,9 @@ def add_cargo(request):
         destination = request.POST.get('destination')
         description = request.POST.get('description')
         payment = request.POST.get('payment')
+        truck = request.POST.get('truck')
+        currency = request.POST.get('currency')
+        payment_method = request.POST.get('payment_method')
 
         # Попробуем получить дополнительные данные
         try:
@@ -185,6 +188,9 @@ def add_cargo(request):
             company=company,
             phone=phone,
             payment=payment,
+            truck=truck,
+            payment_method=payment_method,
+            currency=currency,
             user=request.user
         )
 

@@ -63,4 +63,12 @@
   transform: scale(1.01);
 }
 
+.flex {
+  display: flex;
+}
+
+.block {
+  display: block;
+}
+
 /*# sourceMappingURL=add_cargo.css.map */
