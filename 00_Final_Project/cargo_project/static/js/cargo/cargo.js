@@ -89,19 +89,23 @@
       function filterCargos() {
         const originSelect = document.getElementById("origin-select");
         const destinationSelect = document.getElementById("destination-select");
+        const truckSelect = document.getElementById("truck-select");
         const selectedOrigin = originSelect.value;
         const selectedDestination = destinationSelect.value;
+        const selectedTruck = truckSelect.value;
 
         const cargoCards = document.querySelectorAll(".cargo-card");
 
         cargoCards.forEach((card) => {
           const origin = card.getAttribute("data-origin");
           const destination = card.getAttribute("data-destination");
+          const truck = card.getAttribute("data-truck");
 
           const originMatch = !selectedOrigin || origin === selectedOrigin;
           const destinationMatch = !selectedDestination || destination === selectedDestination;
+          const truckMatch = !selectedTruck || truck === selectedTruck;
 
-          if (originMatch && destinationMatch) {
+          if (originMatch && destinationMatch && truckMatch) {
             card.style.display = "block";
           } else {
             card.style.display = "none";

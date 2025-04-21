@@ -4,7 +4,8 @@ from datetime import timedelta, datetime
 import random
 import uuid
 
-from cargo.models import Cargo, Company, User
+from cargo.models import Cargo, Company, User, Manager
+
 
 class Command(BaseCommand):
     help = 'Створює фейкові вантажі для періоду з 01.02.2025 по сьогодні'
@@ -42,23 +43,61 @@ class Command(BaseCommand):
         ]
 
         trucks = [
-            'Container_20', 'Container_40', 'Tent', 'Refrigerator', 'Isotherm',
-            'Open Platform', 'Jumbo', 'Mega', 'Cistern', 'Car Carrier',
-            'Livestock', 'Lowboy', 'Tilt Trailer', 'Tipper', 'Flatbed',
-            'Tank', 'Side Curtain', 'Dump Truck'
+            'Тентований',
+            'Мега_трейлер',
+            'Jumbo',
+            'Рефрижератор',
+            'Ізотермічний',
+            'Відкритий',
+            'Низькорамний',
+            'Контейнеровоз (20 футів)',
+            'Контейнеровоз (40 футів)',
+            'Контейнерна платформа',
+            'Зерновоз',
+            'Самоскид',
+            'Рухома_підлога',
+            'Цистерна',
+            'Цистерна для хімікатів',
+            'Цистерна для пального',
+            'Цистерна харчова',
+            'Причіп для тварин',
+            'Лісовоз',
+            'Автовоз',
+            'Караван',
+            'Платформа',
+            'Модульний трал'
         ]
 
-        currencies = ['UAH', 'USD', 'EUR', 'PLN', 'GBP', 'CHF', 'CZK']
+        currencies = [
+            'UAH', 'USD', 'EUR', 'PLN', 'GBP', 'CHF', 'CZK',
+            'HUF', 'RON', 'TRY', 'CNY', 'JPY', 'CAD', 'AUD',
+            'MDL', 'RSD', 'NOK', 'SEK', 'DKK'
+        ]
 
         payment_methods = [
-            'card', 'cash', 'bank_transfer', 'payment_on_delivery',
-            'invoice', 'online_wallet', 'crypto', 'terminal',
-            'letter_of_credit', 'western_union', 'barter', 'cheque', 'mobile_payment'
+            'На картку',
+            'Готівкою',
+            'Банківський переказ',
+            'Післяплата',
+            'По рахунку',
+            'Онлайн_гаманець',
+            'Криптовалюта',
+            'Термінал',
+            'Акредитив',
+            'Бартер',
+            'Банківський чек',
+            'Мобільна оплата'
         ]
 
         try:
             user = User.objects.first()
             company = Company.objects.first()
+            # Try to get manager data if exists
+            try:
+                manager = Manager.objects.get(user=user)
+                manager_phone = manager.manager_phone
+            except Manager.DoesNotExist:
+                manager_phone = f"+380{random.randint(100000000, 999999999)}"
         except:
             self.stdout.write(self.style.ERROR("Не знайдено користувача або компанії"))
             return
@@ -74,23 +113,20 @@ class Command(BaseCommand):
                 destination = random.choice([c for c in cities if c != origin])
                 name = random.choice(cargo_names)
 
-                phone = f"+380{random.randint(100000000, 999999999)}"
-
                 created_at = datetime.combine(current_date, datetime.min.time()) + timedelta(
                     hours=random.randint(0, 23),
                     minutes=random.randint(0, 59)
                 )
 
-                Cargo.objects.create(
+                cargo = Cargo(
                     name=name,
                     origin=origin,
                     destination=destination,
                     distance=f"{random.randint(100, 900)} км",
                     duration=f"{random.randint(1, 12)} год",
                     description=f"Перевезення {origin} → {destination}",
-                    shipment_id=str(uuid.uuid4())[:12],
                     company=company,
-                    phone=phone,
+                    phone=manager_phone,
                     payment=round(random.uniform(300, 1000), 2),
                     truck=random.choice(trucks),
                     currency=random.choice(currencies),
@@ -98,6 +134,9 @@ class Command(BaseCommand):
                     user=user,
                     created_at=created_at
                 )
+
+                # Let the model handle shipment_id generation in save()
+                cargo.save()
                 total_inserted += 1
 
             current_date += timedelta(days=1)

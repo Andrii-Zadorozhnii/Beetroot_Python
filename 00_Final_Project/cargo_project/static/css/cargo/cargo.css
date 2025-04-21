@@ -103,3 +103,13 @@
     margin-bottom: 1rem;
 }
 
+.hide_show {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.hide_show.show {
+    max-height: 800px; /* достатньо велике значення для вмісту */
+}
+

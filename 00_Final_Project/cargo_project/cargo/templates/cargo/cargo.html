@@ -13,7 +13,7 @@
         <h2 class="section-title">Пошук Вантаж</h2>
         <div class="filters">
             <div class="filter-group">
-                <label for="origin-select">Місце відправлення:</label>
+                <label for="origin-select">Відправлення:</label>
                 <select id="origin-select" onchange="filterCargos()">
                     <option value="">З усіх напрямків</option>
                     {% for origin in origins %}
@@ -21,8 +21,9 @@
                     {% endfor %}
                 </select>
             </div>
+
             <div class="filter-group">
-                <label for="destination-select">Місце прибуття::</label>
+                <label for="destination-select">Прибуття::</label>
                 <select id="destination-select" onchange="filterCargos()">
                     <option value="">В Усі напрямки</option>
                     {% for destination in destinations %}
@@ -30,21 +31,33 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="filter-group">
+                <label for="truck-select">Причеп</label>
+                <select id="truck-select" onchange="filterCargos()">
+                    <option value="">Усі причепи</option>
+                    {% for item in truck %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
         </div>
 
+
         {% for cargo in cargos %}
-            <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}"
-                 onclick="handleCardClick(this, '{{ cargo.origin }}', '{{ cargo.destination }}')">
+            <div class="cargo-card" data-origin="{{ cargo.origin }}" data-destination="{{ cargo.destination }}" data-truck="{{ cargo.truck }}" onclick="handleCardClick(this, '{{ cargo.origin }}', '{{ cargo.destination }}')">
                 <h3>{{ cargo.name }}</h3>
                 <p><strong>Відправлення:</strong> {{ cargo.origin }}</p>
                 <p><strong>Прибуття:</strong> {{ cargo.destination }}</p>
-                <p><strong>Відстань:</strong> {{ cargo.distance }}</p>
-                <p><strong>Тривалість:</strong> {{ cargo.duration }}</p>
+                <p><strong>Причеп:</strong> {{ cargo.truck }}</p>
+                <p><strong>Сплата:</strong> {{ cargo.payment }} {{cargo.currency}} | {{cargo.payment_method}}</p>
+
 
                 <div class="hide_show">
                     <p><strong>Компанія:</strong> {{ cargo.company }}</p>
                     <p><strong>Телефон:</strong> {{ cargo.phone }}</p>
-                    <p><strong>Сплата:</strong> {{ cargo.payment }}usd</p>
+                    <p><strong>Відстань:</strong> {{ cargo.distance }} </p>
+                    <p><strong>Тривалість:</strong> {{ cargo.duration }}</p>
                     <p><strong>Коментар:</strong> {{ cargo.description }}</p>
                 </div>
             </div>
@@ -87,14 +100,36 @@
         document.querySelector('.cargo-list').style.height = contentHeight + 'px';
         document.querySelector('.map-container').style.height = contentHeight + 'px';
     }
-    function handleCardClick(cardElement, origin, destination) {
-        // Обновляем карту
-        updateMap(origin, destination);
+    // function handleCardClick(cardElement, origin, destination) {
+    //     // Обновляем карту
+    //     updateMap(origin, destination);
+    //
+    //     // Переключаем видимость блока
+    //     const detailBlock = cardElement.querySelector('.hide_show');
+    //     detailBlock.classList.toggle('show');
+    // }
 
-        // Переключаем видимость блока
-        const detailBlock = cardElement.querySelector('.hide_show');
-        detailBlock.classList.toggle('show');
+    function handleCardClick(cardElement, origin, destination) {
+    // Оновлюємо карту
+    updateMap(origin, destination);
+
+    // Знаходимо всі відкриті блоки
+    const allDetailBlocks = document.querySelectorAll('.hide_show');
+
+    // Поточний блок, на який натиснули
+    const currentDetailBlock = cardElement.querySelector('.hide_show');
+
+    // Чи вже відкритий?
+    const isAlreadyOpen = currentDetailBlock.classList.contains('show');
+
+    // Закриваємо всі
+    allDetailBlocks.forEach(block => block.classList.remove('show'));
+
+    // Якщо поточний не був відкритий — відкриваємо
+    if (!isAlreadyOpen) {
+        currentDetailBlock.classList.add('show');
     }
+}
 
 </script>
 {% endblock %}
