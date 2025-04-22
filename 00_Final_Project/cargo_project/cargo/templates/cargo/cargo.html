@@ -14,29 +14,29 @@
         <div class="filters">
             <div class="filter-group">
                 <label for="origin-select">Відправлення:</label>
-                <select id="origin-select" onchange="filterCargos()">
-                    <option value="">З усіх напрямків</option>
+                <select class="mw-15rem" id="origin-select" onchange="filterCargos()">
+                    <option  value="">З усіх напрямків</option>
                     {% for origin in origins %}
-                        <option  value="{{ origin }}">{{ origin }}</option>
+                        <option class='rounded-4' value="{{ origin }}">{{ origin }}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="filter-group">
                 <label for="destination-select">Прибуття::</label>
-                <select id="destination-select" onchange="filterCargos()">
+                <select class="mw-15rem" id="destination-select" onchange="filterCargos()">
                     <option value="">В Усі напрямки</option>
                     {% for destination in destinations %}
-                        <option  value="{{ destination }}">{{ destination }}</option>
+                        <option value="{{ destination }}">{{ destination }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="filter-group">
                 <label for="truck-select">Причеп</label>
-                <select id="truck-select" onchange="filterCargos()">
+                <select class="mw-15rem" id="truck-select" onchange="filterCargos()">
                     <option value="">Усі причепи</option>
                     {% for item in truck %}
-                        <option value="{{ item }}">{{ item }}</option>
+                        <option  value="{{ item }}">{{ item }}</option>
                     {% endfor %}
                 </select>
             </div>

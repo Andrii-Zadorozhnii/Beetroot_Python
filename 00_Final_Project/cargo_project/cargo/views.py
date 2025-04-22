@@ -134,9 +134,9 @@ def cargo_list(request):
     # Получаем уникальные значения для фильтров
     origins = Cargo.objects.values_list('origin', flat=True).distinct()
     destinations = Cargo.objects.values_list('destination', flat=True).distinct()
-    print(destinations)
+    # print(destinations)
     truck = Cargo.objects.values_list('truck', flat=True).distinct()
-    # print(truck)
+    print(truck)
 
     # Обновляем информацию о маршруте для каждого груза
     for cargo in cargos:
@@ -145,8 +145,6 @@ def cargo_list(request):
             if route_info:
                 cargo.distance = route_info['distance']
                 cargo.duration = route_info['duration']
-                cargo.truck = route_info['truck']
-                # print(cargo.truck)
                 cargo.save()  # Сохраняем обновленные данные в базу
 
     return render(request, 'cargo/cargo.html', {

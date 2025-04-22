@@ -1,5 +1,8 @@
 
-/* Блоки cargo-list и map-container */
+.section-title{
+  text-align: center;
+}
+
 .cargo-list, .map-container {
   overflow: auto;  /* Если контент не помещается, добавляется скроллинг */
   height: 100%; /* Чтобы они всегда оставались внутри */
@@ -111,5 +114,10 @@
 
 .hide_show.show {
     max-height: 800px; /* достатньо велике значення для вмісту */
+}
+
+.mw-15rem{
+  max-width: 15rem;
+  width: 100%;
 }
 
