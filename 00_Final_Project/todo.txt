@@ -1,0 +1,9 @@
+----Web Site
+done* add payment method
+* add counting per km
+* add diff types of truck
+* add weight
+* date of loading
+
+----Telegram Bot
+done* fix add cargo to bd

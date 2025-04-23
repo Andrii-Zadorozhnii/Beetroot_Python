@@ -1,6 +1,8 @@
 import asyncio
 import hashlib
 import re
+import uuid
+from datetime import datetime
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -8,29 +10,30 @@ from aiogram.exceptions import TelegramForbiddenError, TelegramBadRequest, Teleg
 from aiogram.filters import Command
 import logging
 from django.conf import settings
+from django.utils import timezone
 
 BOT_TOKEN = settings.BOT_TOKEN
 DRIVERS_GROUP_ID = settings.DRIVERS_GROUP_ID
 SALT = settings.SALT
-# from cargo_project.cargo_project.settings import BOT_TOKEN, DRIVERS_GROUP_ID, SALT
 from django.db import close_old_connections
 from asgiref.sync import sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
+
 try:
-    from cargo.models import User, Cargo, Company, Manager
+    from cargo.models import User, Cargo, Company, Manager, Customer
 except ImportError:
-    from ..cargo.models import User, Cargo, Company, Manager
+    from ..cargo.models import User, Cargo, Company, Manager, Customer
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Инициализация хранилища временных данных
+user_data = {}
+
 # Инициализация бота
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-
-# Хранилище временных данных
-user_data = {}
 
 # Главное меню
 main_menu = ReplyKeyboardMarkup(
@@ -55,7 +58,43 @@ edit_menu = ReplyKeyboardMarkup(
         [KeyboardButton(text="📦 Название"), KeyboardButton(text="🚛 Отправление")],
         [KeyboardButton(text="📍 Назначение"), KeyboardButton(text="🏢 Компания")],
         [KeyboardButton(text="📞 Телефон"), KeyboardButton(text="💰 Оплата")],
+        [KeyboardButton(text="🚛 Тип транспорта"), KeyboardButton(text="💳 Способ оплаты")],
         [KeyboardButton(text="📝 Комментарий"), KeyboardButton(text="🔙 Назад")]
+    ],
+    resize_keyboard=True
+)
+
+# Меню выбора типа транспорта
+truck_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Тент/фура")],
+        [KeyboardButton(text="Рефрижератор")],
+        [KeyboardButton(text="Изотерм")],
+        [KeyboardButton(text="Открытая платформа")],
+        [KeyboardButton(text="Автоцистерна")],
+        [KeyboardButton(text="🔙 Назад")]
+    ],
+    resize_keyboard=True
+)
+
+# Меню выбора способа оплаты
+payment_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Наличные")],
+        [KeyboardButton(text="Безналичные")],
+        [KeyboardButton(text="Перевод")],
+        [KeyboardButton(text="🔙 Назад")]
+    ],
+    resize_keyboard=True
+)
+
+# Меню выбора валюты
+currency_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="USD")],
+        [KeyboardButton(text="EUR")],
+        [KeyboardButton(text="UAH")],
+        [KeyboardButton(text="🔙 Назад")]
     ],
     resize_keyboard=True
 )
@@ -69,7 +108,9 @@ def format_cargo_data(cargo: Cargo) -> str:
         f"📍 Назначение: {cargo.destination}\n"
         f"🏢 Компания: {cargo.company.company_name if cargo.company else 'Не указано'}\n"
         f"📞 Телефон: {cargo.phone}\n"
-        f"💰 Оплата: {cargo.payment} USD\n"
+        f"💰 Оплата: {cargo.payment} {cargo.currency}\n"
+        f"🚛 Тип транспорта: {cargo.truck}\n"
+        f"💳 Способ оплаты: {cargo.payment_method}\n"
         f"📝 Комментарий: {cargo.description}\n"
         f"🔑 Номер перевозки: {cargo.shipment_id}"
     )
@@ -89,9 +130,11 @@ def get_or_create_user(tg_user: types.User):
         user = User.objects.create_user(
             id=tg_user.id,
             username=username,
+            email=f"{username}@example.com",
+            password=str(uuid.uuid4()),
             first_name=tg_user.first_name or '',
             last_name=tg_user.last_name or '',
-            role='manager'  # По умолчанию создаем как менеджера
+            role='manager'
         )
     return user
 
@@ -135,8 +178,12 @@ def save_cargo_to_db(user_id: int, data: dict):
             description=data['description'],
             phone=data['phone'],
             payment=data['payment'],
+            currency=data.get('currency', 'USD'),
+            truck=data.get('truck', 'Тент/фура'),
+            payment_method=data.get('payment_method', 'Наличные'),
             user=user,
-            company=manager.company if manager else None
+            company=data.get('company_obj'),
+            created_at=data.get('created_at', timezone.now())
         )
 
         return cargo
@@ -182,7 +229,9 @@ async def send_to_drivers_channel(cargo: Cargo):
         f"📦 Груз: {cargo.name}\n"
         f"📍 Маршрут: {cargo.origin} → {cargo.destination}\n"
         f"🏢 Компания: {cargo.company.company_name if cargo.company else 'Не указано'}\n"
-        f"💰 Оплата: {cargo.payment} USD\n"
+        f"💰 Оплата: {cargo.payment} {cargo.currency}\n"
+        f"🚛 Тип транспорта: {cargo.truck}\n"
+        f"💳 Способ оплаты: {cargo.payment_method}\n"
         f"📞 Контакт: {cargo.phone}\n"
         f"📝 Детали: {cargo.description}\n"
         f"🔑 Номер: {cargo.shipment_id}"
@@ -239,7 +288,7 @@ async def show_cargos(message: Message):
             f"🔸 Номер: {cargo.shipment_id}\n"
             f"📦 Название: {cargo.name}\n"
             f"🚚 Маршрут: {cargo.origin} → {cargo.destination}\n"
-            f"💵 Оплата: {cargo.payment} USD"
+            f"💵 Оплата: {cargo.payment} {cargo.currency}"
         )
 
         builder = InlineKeyboardBuilder()
@@ -290,7 +339,8 @@ async def edit_cargo(callback: CallbackQuery):
 
 # Обработка редактирования
 @dp.message(lambda message: message.text in ["📦 Название", "🚛 Отправление", "📍 Назначение",
-                                             "🏢 Компания", "📞 Телефон", "💰 Оплата", "📝 Комментарий"])
+                                             "🏢 Компания", "📞 Телефон", "💰 Оплата",
+                                             "🚛 Тип транспорта", "💳 Способ оплаты", "📝 Комментарий"])
 async def edit_field(message: Message):
     user_id = message.from_user.id
     if user_id not in user_data or user_data[user_id]["state"] != "editing":
@@ -304,12 +354,22 @@ async def edit_field(message: Message):
         "🏢 Компания": "company",
         "📞 Телефон": "phone",
         "💰 Оплата": "payment",
+        "🚛 Тип транспорта": "truck",
+        "💳 Способ оплаты": "payment_method",
         "📝 Комментарий": "description"
     }
 
     field = field_map[message.text]
     user_data[user_id]["edit_field"] = field
-    await message.answer(f"Введите новое значение для {message.text}:", reply_markup=types.ReplyKeyboardRemove())
+
+    if field == "truck":
+        await message.answer("Выберите тип транспорта:", reply_markup=truck_menu)
+    elif field == "payment_method":
+        await message.answer("Выберите способ оплаты:", reply_markup=payment_menu)
+    elif field == "payment":
+        await message.answer("Введите сумму оплаты:", reply_markup=currency_menu)
+    else:
+        await message.answer(f"Введите новое значение для {message.text}:", reply_markup=types.ReplyKeyboardRemove())
 
 
 # Обработка ввода новых значений
@@ -362,12 +422,12 @@ async def handle_add_cargo(message: Message):
         if message.text == "📲 Использовать Telegram":
             if message.from_user.username:
                 data["phone"] = f"@{message.from_user.username}"
-                await message.answer("Введите сумму оплаты (USD):", reply_markup=types.ReplyKeyboardRemove())
+                await message.answer("Введите сумму оплаты:", reply_markup=currency_menu)
             else:
                 await message.answer("У вас нет username. Введите телефон:")
         elif re.match(r"^\+?[1-9]\d{1,14}$", text):
             data["phone"] = text
-            await message.answer("Введите сумму оплаты (USD):", reply_markup=types.ReplyKeyboardRemove())
+            await message.answer("Введите сумму оплаты:", reply_markup=currency_menu)
         else:
             await message.answer("Введите корректный телефон")
     elif "payment" not in data:
@@ -375,11 +435,20 @@ async def handle_add_cargo(message: Message):
             payment = float(text)
             if payment > 0:
                 data["payment"] = payment
-                await message.answer("Введите комментарий:")
+                await message.answer("Выберите валюту оплаты:", reply_markup=currency_menu)
             else:
                 await message.answer("Сумма должна быть > 0")
         except ValueError:
             await message.answer("Введите число")
+    elif "currency" not in data and text in ["USD", "EUR", "UAH"]:
+        data["currency"] = text
+        await message.answer("Выберите тип транспорта:", reply_markup=truck_menu)
+    elif "truck" not in data and text in ["Тент/фура", "Рефрижератор", "Изотерм", "Открытая платформа", "Автоцистерна"]:
+        data["truck"] = text
+        await message.answer("Выберите способ оплаты:", reply_markup=payment_menu)
+    elif "payment_method" not in data and text in ["Наличные", "Безналичные", "Перевод"]:
+        data["payment_method"] = text
+        await message.answer("Введите комментарий:")
     elif "description" not in data:
         if len(text) <= 500:
             data["description"] = text
@@ -439,6 +508,16 @@ async def handle_edit_field(message: Message):
             valid = False
     elif field == "description" and len(text) > 500:
         await message.answer("Комментарий слишком длинный (макс 500 симв)")
+        valid = False
+    elif field == "truck" and text not in ["Тент/фура", "Рефрижератор", "Изотерм", "Открытая платформа",
+                                           "Автоцистерна"]:
+        await message.answer("Выберите тип транспорта из меню")
+        valid = False
+    elif field == "payment_method" and text not in ["Наличные", "Безналичные", "Перевод"]:
+        await message.answer("Выберите способ оплаты из меню")
+        valid = False
+    elif field == "currency" and text not in ["USD", "EUR", "UAH"]:
+        await message.answer("Выберите валюту из меню")
         valid = False
 
     if not valid:

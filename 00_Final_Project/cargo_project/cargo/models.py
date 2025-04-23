@@ -33,7 +33,7 @@ class Cargo(models.Model):
     currency = models.CharField(max_length=3)
     payment_method = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.origin} → {self.destination})"
