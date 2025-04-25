@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
 from .models import Note
 
 
@@ -40,3 +41,19 @@ def edit_note(request, note_id):
 
 def home(request):
     return render(request, 'home.html')
+
+@login_required
+@csrf_protect
+def create_note(request):
+    """Створення нової нотатки"""
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        if title and content:
+            Note.objects.create(
+                title=title,
+                content=content,
+                author=request.user
+            )
+            return redirect('user_notes')
+    return render(request, 'create_note.html')
