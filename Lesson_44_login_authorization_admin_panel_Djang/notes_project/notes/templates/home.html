@@ -1,0 +1,7 @@
+<h1>Welcome to the Notes App</h1>
+{% if user.is_authenticated %}
+    <a href="{% url 'user_notes' %}">My Notes</a>
+    <a href="{% url 'logout' %}">Log out</a>
+{% else %}
+    <a href="{% url 'login' %}">Log in</a>
+{% endif %}
