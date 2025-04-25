@@ -1,8 +1,19 @@
-<h1>Welcome to the Notes App</h1>
-{% if user.is_authenticated %}
-    <a href="{% url 'user_notes' %}">My Notes</a>
-    <a href="{% url 'create_note' %}">Add Note</a>
-    <a href="{% url 'logout' %}">Log out</a>
-{% else %}
-    <a href="{% url 'login' %}">Log in</a>
-{% endif %}
+{% extends 'base.html' %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center">
+        <h1 class="display-4 mb-4">📝 Ласкаво просимо до <span class="text-primary">NoteApp</span></h1>
+
+        {% if user.is_authenticated %}
+            <p class="lead">👋 Привіт, <strong>{{ user.username }}</strong>!</p>
+            <a href="{% url 'user_notes' %}" class="btn btn-outline-success btn-lg mt-3">Перейти до моїх нотаток</a>
+        {% else %}
+            <p class="lead">Щоб користуватись додатком, спочатку увійдіть:</p>
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-3">🔐 Увійти</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

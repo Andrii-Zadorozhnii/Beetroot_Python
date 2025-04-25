@@ -1,11 +1,37 @@
-<h1>Edit Note</h1>
-<form method="POST">
+{% extends 'base.html' %}
+
+{% block title %}Редагування нотатки{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">✏️ Редагувати нотатку</h1>
+
+<form method="POST" class="needs-validation" novalidate>
     {% csrf_token %}
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title" value="{{ note.title }}">
     
-    <label for="content">Content</label>
-    <textarea name="content" id="content">{{ note.content }}</textarea>
-    
-    <button type="submit">Save Changes</button>
+    <div class="mb-3">
+        <label for="title" class="form-label">Заголовок</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="title" 
+            name="title" 
+            value="{{ note.title }}" 
+            required
+        >
+    </div>
+
+    <div class="mb-3">
+        <label for="content" class="form-label">Зміст</label>
+        <textarea 
+            class="form-control" 
+            id="content" 
+            name="content" 
+            rows="5" 
+            required
+        >{{ note.content }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">💾 Зберегти зміни</button>
+    <a href="{% url 'user_notes' %}" class="btn btn-secondary">⬅️ Назад до нотаток</a>
 </form>
+{% endblock %}

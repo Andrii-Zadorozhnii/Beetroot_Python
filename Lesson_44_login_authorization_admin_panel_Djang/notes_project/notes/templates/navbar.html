@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">📝 NoteApp</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'user_notes' %}">Мої нотатки</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'create_note' %}">Створити нотатку</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Вийти</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Увійти</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

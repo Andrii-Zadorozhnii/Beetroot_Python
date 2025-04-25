@@ -1,8 +1,31 @@
-<h1>Your Notes</h1>
-<ul>
+{% extends 'base.html' %}
+
+{% block title %}Мої нотатки{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">📚 Ваші нотатки</h1>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
     {% for note in notes %}
-        <li>
-            <a href="{% url 'edit_note' note.id %}">{{ note.title }}</a>
-        </li>
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'edit_note' note.id %}" class="text-decoration-none text-dark">
+                        {{ note.title }}
+                    </a>
+                </h5>
+                <p class="card-text text-muted">
+                    {{ note.content|truncatechars:100 }}
+                </p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Створено: {{ note.created_at|date:"d.m.Y H:i" }}</small>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Нотаток поки немає. Створіть першу!</p>
     {% endfor %}
-</ul>
+</div>
+{% endblock %}

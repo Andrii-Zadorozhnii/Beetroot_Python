@@ -1,6 +1,19 @@
-<form method="POST">
+{% extends 'base.html' %}
+
+{% block title %}Створити нотатку{% endblock %}
+
+{% block content %}
+<h2>Створити нотатку</h2>
+<form method="POST" class="mt-4">
     {% csrf_token %}
-    <input type="text" name="title" placeholder="Заголовок"><br>
-    <textarea name="content" placeholder="Зміст"></textarea><br>
-    <button type="submit">Зберегти</button>
+    <div class="mb-3">
+        <label for="title" class="form-label">Заголовок</label>
+        <input type="text" class="form-control" name="title" id="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Зміст</label>
+        <textarea class="form-control" name="content" id="content" rows="5" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Зберегти</button>
 </form>
+{% endblock %}
