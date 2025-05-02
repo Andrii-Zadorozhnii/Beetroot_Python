@@ -37,9 +37,11 @@ class CaptchaView(APIView):
             }
         )
 
-class CommentCreateView(generics.CreateAPIView):
-    queryset = Comment.objects.all()
+class CommentListCreateView(generics.ListCreateAPIView):
+    queryset = Comment.objects.filter(parent=None).order_by('-created_at')
     serializer_class = CommentSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['username', 'email', 'created_at']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
